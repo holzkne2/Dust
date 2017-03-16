@@ -1,6 +1,4 @@
 #include "Direct3D.h"
-#include <Windows.h>
-#include <D3D11.h>
 #include <D3DX11.h>
 #include <SDL.h>
 #include <iostream>
@@ -411,8 +409,10 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Create an orthographic projection matrix for 2D rendering.
 	_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
-
 	std::cout << "Direct3D Init" << std::endl;
+
+	BeginScene(0, 0, 0);
+	EndScene();
 }
 
 void Direct3D::BeginScene(float red, float green, float blue)

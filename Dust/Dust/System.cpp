@@ -47,7 +47,6 @@ void System::Run()
 			switch (evt.type)
 			{
 			case SDL_QUIT:  programrunning = false;   break;
-				/* process other events you want to handle here */
 			}
 		}
 		//Input
