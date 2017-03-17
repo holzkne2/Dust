@@ -9,8 +9,17 @@ public:
 	System();
 	virtual ~System();
 
+	static System& getInstance()
+	{
+		static System instance;
+		return instance;
+	}
+
+	Graphics* GetGraphics() { return _graphics; }
+
 	void Initialize();
 	void Run();
+	void Shutdown();
 
 private:
 	Graphics *_graphics;

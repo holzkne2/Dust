@@ -21,6 +21,8 @@ public:
 	Vector3 GetScale() { return _scale; }
 
 	void Translate(const Vector3& translation) { _dirty = true; _position += translation; }
+	
+	Matrix4x4 GetWorldMatrix();
 
 private:
 	Vector3 _position;
@@ -29,6 +31,5 @@ private:
 
 	bool _dirty;
 	Matrix4x4 _worldMatrix;
-	Matrix4x4 _normalMatrix;
 };
 

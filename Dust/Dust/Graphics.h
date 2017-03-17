@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include "Direct3D.h"
+#include "Camera.h"
 
 class Graphics
 {
@@ -11,6 +12,9 @@ public:
 
 	void Awake();
 	void Render();
+
+	int GetScreenWidth() { return _screenWidth; }
+	int GetScreenHeight() { return _screenHeight; }
 
 private:
 	SDL_Window *_window;

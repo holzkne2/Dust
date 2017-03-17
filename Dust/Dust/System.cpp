@@ -2,6 +2,13 @@
 #include <string>
 #include "System.h"
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new DEBUG_NEW
+#endif
 
 System::System()
 {
@@ -11,12 +18,6 @@ System::System()
 
 System::~System()
 {
-	if (_scene)
-		delete _scene;
-	if (_graphics)
-		delete _graphics;
-
-	SDL_Quit();
 }
 
 void System::Initialize()
@@ -31,6 +32,7 @@ void System::Initialize()
 
 void System::Run()
 {
+	_scene = new Scene();
 	//Awake GameObjects
 	_scene->Awake();
 	
@@ -61,4 +63,14 @@ void System::Run()
 		//Graphics
 		_graphics->Render();
 	}
+}
+
+void System::Shutdown()
+{
+	if (_scene)
+		delete _scene;
+	if (_graphics)
+		delete _graphics;
+
+	SDL_Quit();
 }

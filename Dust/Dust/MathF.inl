@@ -688,6 +688,7 @@ inline Matrix4x4& Matrix4x4::operator *= (float s)
 	_42 *= s;
 	_43 *= s;
 	_44 *= s;
+	return *this;
 }
 
 inline Matrix4x4 operator* (const Matrix4x4& a, const Matrix4x4& b)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-//#include <vector>
+#include <vector>
 
 class Scene
 {
@@ -14,6 +14,6 @@ public:
 	void Update();
 
 private:
-	//std::vector<GameObject> _gameObjects;
+	std::vector<GameObject> _gameObjects;
 };
 

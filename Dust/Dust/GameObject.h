@@ -2,6 +2,7 @@
 #include <vector>
 #include "Object.h"
 #include "Transform.h"
+
 class GameObject :
 	public Object
 {
