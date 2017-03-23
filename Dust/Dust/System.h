@@ -15,7 +15,7 @@ public:
 		return instance;
 	}
 
-	Graphics* GetGraphics() { return _graphics; }
+	Scene* GetScene() { return _scene; }
 
 	void Initialize();
 	void Run();
@@ -25,4 +25,3 @@ private:
 	Graphics *_graphics;
 	Scene *_scene;
 };
-

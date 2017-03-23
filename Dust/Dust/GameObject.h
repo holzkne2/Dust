@@ -2,6 +2,7 @@
 #include <vector>
 #include "Object.h"
 #include "Transform.h"
+#include "Component.h"
 
 class GameObject :
 	public Object
@@ -28,9 +29,9 @@ template<typename T> T* GameObject::GetComponent()
 {
 	T* result;
 
-	for (unsigned int i = 0; i < components.size(); i++)
+	for (unsigned int i = 0; i < _components.size(); i++)
 	{
-		result = dynamic_cast<T*>(components[i]);
+		result = dynamic_cast<T*>(_components[i]);
 		if (result != NULL)
 			return result;
 	}
@@ -47,6 +48,6 @@ template<typename T> T* GameObject::AddComponent()
 		return nullptr;
 	}
 	static_cast<Component*>(add)->SetGameObject(this);
-	components.push_back(add);
+	_components.push_back(add);
 	return add;
 }

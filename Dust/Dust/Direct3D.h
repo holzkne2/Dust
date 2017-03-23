@@ -8,9 +8,9 @@
 #include <dxgi.h>
 #include <d3dcommon.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
+#include "MathF.h"
 
-using namespace DirectX;
+using namespace MathF;
 
 class Direct3D
 {
@@ -34,8 +34,5 @@ private:
 	ID3D11DepthStencilState* _depthStencilState;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11RasterizerState* _rasterState;
-	XMMATRIX _projectionMatrix;
-	XMMATRIX _worldMatrix;
-	XMMATRIX _orthoMatrix;
 };
 

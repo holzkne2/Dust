@@ -108,9 +108,10 @@ void Mesh::Render(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+//TODO: Adapt to vertex size
 bool Mesh::InitializeBuffers(ID3D11Device* device)
 {
-	VertexType* Fullvertices = new VertexType[_vertices.size()];
+	appdata_full* Fullvertices = new appdata_full[_vertices.size()];
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
@@ -137,7 +138,7 @@ bool Mesh::InitializeBuffers(ID3D11Device* device)
 
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertices.size();
+	vertexBufferDesc.ByteWidth = sizeof(appdata_base) * _vertices.size();
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
@@ -206,7 +207,7 @@ void Mesh::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 
 	// Set vertex buffer stride and offset.
-	stride = sizeof(VertexType);
+	stride = sizeof(appdata_base);
 	offset = 0;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.

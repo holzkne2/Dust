@@ -18,8 +18,5 @@ private:
 	float _zFar;
 	float _zNear;
 	float _fov;
-
-	bool _dirty;
-	Matrix4x4 _viewport;
 };
 

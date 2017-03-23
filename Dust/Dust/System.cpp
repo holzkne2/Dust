@@ -26,7 +26,7 @@ void System::Initialize()
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 	}
 
-	_graphics = new Graphics();
+	_graphics = &Graphics::getInstance();
 	_graphics->Awake();
 }
 
@@ -70,7 +70,7 @@ void System::Shutdown()
 	if (_scene)
 		delete _scene;
 	if (_graphics)
-		delete _graphics;
+		_graphics->ShutDown();
 
 	SDL_Quit();
 }

@@ -404,18 +404,18 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	float fieldOfView, screenAspect;
 	// Setup the projection matrix.
-	fieldOfView = (float)XM_PI / 2.0f;
+	fieldOfView = (float)PI / 2.0f;
 	//fieldOfView = 60;
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
-	// Create the projection matrix for 3D rendering.
-	_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenHeight);
+	//// Create the projection matrix for 3D rendering.
+	//_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenHeight);
 
-	// Initialize the world matrix to the identity matrix.
-	_worldMatrix = XMMatrixIdentity();
+	//// Initialize the world matrix to the identity matrix.
+	//_worldMatrix = XMMatrixIdentity();
 
-	// Create an orthographic projection matrix for 2D rendering.
-	_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+	//// Create an orthographic projection matrix for 2D rendering.
+	//_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
 	std::cout << "Direct3D Init" << std::endl;
 

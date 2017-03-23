@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "Graphics.h"
+#include "System.h"
+#include "Camera.h"
+#include "MeshRenderer.h"
 
 #include <SDL_syswm.h>
 #include <Windows.h>
@@ -16,7 +20,6 @@
 Graphics::Graphics()
 {
 	_window = 0;
-	_renderer = 0;
 	_direct3d = 0;
 
 	_screenWidth = 800;
@@ -27,10 +30,6 @@ Graphics::Graphics()
 
 Graphics::~Graphics()
 {
-	SDL_DestroyRenderer(_renderer);
-	SDL_DestroyWindow(_window);
-	if (_direct3d)
-		delete _direct3d;
 }
 
 void Graphics::Awake()
@@ -43,16 +42,6 @@ void Graphics::Awake()
 		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
 	}
-
-
-	//May not be needed
-	//Setup Renderer
-	//_renderer = SDL_CreateRenderer(_window, SDL_VIDEO_RENDER_D3D11, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	//if (_renderer == nullptr){
-	//	SDL_DestroyWindow(_window);
-	//	std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-	//	SDL_Quit();
-	//}
 
 	//Get HWND
 	SDL_SysWMinfo systemInfo;
@@ -68,11 +57,39 @@ void Graphics::Awake()
 
 void Graphics::Render()
 {
+	Matrix4x4 viewMatrix, projectionMatrix, worldMatrix;
+	Camera* camera = 0;
+	std::vector<GameObject*>* gameObjects = System::getInstance().GetScene()->GetGameObjects();
+	std::vector<MeshRenderer*>* meshRenderers = System::getInstance().GetScene()->GetMeshRenderers();
+	
+	//Clear Buffer
 	_direct3d->BeginScene(0.1, 0.1, 0.1);
-	//SDL_RenderClear(_renderer);
-	//Background Color
-	//SDL_SetRenderDrawColor(_renderer, 134, 205, 250, 255);
 
-	//SDL_RenderPresent(_renderer);
+	//Find Camera
+	for (unsigned int i = 0; i < gameObjects->size(); i++)
+	{
+		if (gameObjects->at(i)->GetComponent<Camera>() != nullptr)
+		{
+			camera = gameObjects->at(i)->GetComponent<Camera>();
+			continue;
+		}
+	}
+
+	//Render Camera
+	if (camera)
+	{
+		viewMatrix = camera->GetViewMatrix();
+		projectionMatrix = camera->GetViewport();
+	}
+
+	//Swap Buffer
 	_direct3d->EndScene();
+}
+
+void Graphics::ShutDown()
+{
+	SDL_DestroyWindow(_window);
+	if (_direct3d)
+		delete _direct3d;
+
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.h"
-#include <d3d11_1.h>
+#include <d3d11.h>
 #include "MathF.h"
 #include <vector>
 
@@ -33,11 +33,27 @@ private:
 	void RenderBuffers(ID3D11DeviceContext*);
 
 private:
-	struct  VertexType
+	struct  appdata_base
 	{
 		Vector3 position;
 		Vector2 uv;
 		Vector3 normal;
+	};
+
+	struct  appdata_tan
+	{
+		Vector3 position;
+		Vector2 uv;
+		Vector3 normal;
+		Vector3 tangent;
+	};
+
+	struct  appdata_full
+	{
+		Vector3 position;
+		Vector2 uv;
+		Vector3 normal;
+		Vector3 tangent;
 		Color color;
 	};
 
@@ -47,6 +63,7 @@ private:
 	std::vector<int> _triangles;
 	std::vector<Vector2> _uvs;
 	std::vector<Vector3> _normals;
+	std::vector<Vector3> _tangents;
 
 	ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 };
