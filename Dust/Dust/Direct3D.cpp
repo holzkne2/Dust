@@ -81,6 +81,7 @@ Direct3D::~Direct3D()
 	}
 }
 
+//TODO: Change to Awake
 void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, float screenDepth, float screenNear)
 {
 	_vsync_enabled = vsync;

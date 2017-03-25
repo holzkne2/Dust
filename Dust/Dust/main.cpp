@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include "res_path.h"
 #include "System.h"
+#include <memory>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -23,6 +24,8 @@ int main(int argc, char **argv){
 	system->Initialize();
 
 	system->Run();
+
+	//unique_ptr<float> test(new float(10));
 
 	system->Shutdown();
 	_CrtDumpMemoryLeaks();

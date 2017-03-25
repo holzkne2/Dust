@@ -27,18 +27,15 @@ void System::Initialize()
 	}
 
 	_graphics = &Graphics::getInstance();
-	_graphics->Awake();
 }
 
 void System::Run()
 {
 	_scene = new Scene();
-	//Awake GameObjects
-	_scene->Awake();
 	
-	//Start GameObjects
-	_scene->Start();
-	
+	//TESTCODE
+	_scene->SampleScene();
+
 	SDL_Event evt;
 	bool programrunning = true;
 	while (programrunning)

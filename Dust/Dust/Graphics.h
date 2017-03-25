@@ -25,6 +25,7 @@ public:
 private:
 	SDL_Window *_window;
 	Direct3D *_direct3d;
+	HWND* _hwnd;
 
 	int _screenWidth;
 	int _screenHeight;

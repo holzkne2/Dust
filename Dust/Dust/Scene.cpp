@@ -1,5 +1,5 @@
 #include "Scene.h"
-
+#include "UnlitColorShader.h"
 #include "Camera.h"
 
 #define _CRTDBG_MAP_ALLOC
@@ -14,9 +14,6 @@ Scene::Scene()
 {
 	_gameObjects = std::vector<GameObject*>();
 	_meshRenderers = std::vector<MeshRenderer*>();
-
-	//TESTCODE
-	SampleScene();
 }
 
 Scene::~Scene()
@@ -29,22 +26,6 @@ Scene::~Scene()
 	_meshRenderers.clear();
 }
 
-void Scene::Awake()
-{
-	for (unsigned int i = 0; i < _gameObjects.size(); i++)
-	{
-		_gameObjects[i]->Awake();
-	}
-}
-
-void Scene::Start()
-{
-	for (unsigned int i = 0; i < _gameObjects.size(); i++)
-	{
-		_gameObjects[i]->Start();
-	}
-}
-
 void Scene::Update()
 {
 	for (unsigned int i = 0; i < _gameObjects.size(); i++)
@@ -55,8 +36,34 @@ void Scene::Update()
 
 void Scene::SampleScene()
 {
-	//TODO: gameobject auto add to list
 	GameObject* camera = new GameObject();
 	camera->AddComponent<Camera>();
-	_gameObjects.push_back(camera);
+	AddGameObject(camera);
+	
+	//TODO:Better Shader Handlers
+	UnlitColorShader* unlitColorShader = new UnlitColorShader();
+
+	GameObject* simpleMesh = new GameObject();
+	simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, -5));
+	simpleMesh->AddComponent<MeshRenderer>();
+	simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
+	simpleMesh->GetComponent<MeshRenderer>()->SetShader(unlitColorShader);
+	AddGameObject(simpleMesh);
+
+	//simpleMesh = new GameObject();
+	//simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, 5));
+	//simpleMesh->AddComponent<MeshRenderer>();
+	//simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
+	//simpleMesh->GetComponent<MeshRenderer>()->SetShader(unlitColorShader);
+	//AddGameObject(simpleMesh);
+}
+
+void Scene::AddGameObject(GameObject* gameObject)
+{
+	_gameObjects.push_back(gameObject);
+}
+
+void Scene::AddMeshRenderer(MeshRenderer* meshRenderer)
+{
+	_meshRenderers.push_back(meshRenderer);
 }

@@ -26,6 +26,8 @@ Graphics::Graphics()
 	_screenHeight = 600;
 
 	_fullscreen = false;
+
+	Awake();
 }
 
 Graphics::~Graphics()
@@ -48,25 +50,26 @@ void Graphics::Awake()
 	SDL_VERSION(&systemInfo.version);
 	SDL_GetWindowWMInfo(_window, &systemInfo);
 
-	HWND handle = systemInfo.info.win.window;
+	_hwnd = &systemInfo.info.win.window;
 
 	//Setup Direct3D
 	_direct3d = new Direct3D();
-	_direct3d->Initialize(_screenHeight, _screenHeight, false, handle, _fullscreen, 0.1, 1000);
+	_direct3d->Initialize(_screenHeight, _screenHeight, false, *_hwnd, _fullscreen, 0.1, 1000);
 }
 
 void Graphics::Render()
 {
 	Matrix4x4 viewMatrix, projectionMatrix, worldMatrix;
 	Camera* camera = 0;
-	std::vector<GameObject*>* gameObjects = System::getInstance().GetScene()->GetGameObjects();
-	std::vector<MeshRenderer*>* meshRenderers = System::getInstance().GetScene()->GetMeshRenderers();
+	const std::vector<GameObject*>* gameObjects = System::getInstance().GetScene()->GetGameObjects();
+	const std::vector<MeshRenderer*>* meshRenderers = System::getInstance().GetScene()->GetMeshRenderers();
+	MeshRenderer* meshRendererPointer = 0;
 	
 	//Clear Buffer
 	_direct3d->BeginScene(0.1, 0.1, 0.1);
 
 	//Find Camera
-	for (unsigned int i = 0; i < gameObjects->size(); i++)
+	for (unsigned int i = 0; i < gameObjects->size(); ++i)
 	{
 		if (gameObjects->at(i)->GetComponent<Camera>() != nullptr)
 		{
@@ -80,6 +83,24 @@ void Graphics::Render()
 	{
 		viewMatrix = camera->GetViewMatrix();
 		projectionMatrix = camera->GetViewport();
+
+		for (unsigned int i = 0; i < meshRenderers->size(); ++i)
+		{
+			meshRendererPointer = meshRenderers->at(i);
+			worldMatrix = meshRendererPointer->GetGameObject()->GetTransform()->GetWorldMatrix();
+			
+			if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
+				if(!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
+					std::cout << "Mesh Initialize Failed" << std::endl;
+			meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
+			
+			if (!meshRendererPointer->GetShader()->IsInitizlized())
+				if (!meshRendererPointer->GetShader()->Initialize(_direct3d->GetDevice(), *_hwnd))
+					std::cout << "Shader Initialize Failed" << std::endl;
+			meshRendererPointer->GetShader()->Render(_direct3d->GetDeviceContext(),
+				meshRendererPointer->GetSharedMesh()->GetIndexCount(),
+				worldMatrix, viewMatrix, projectionMatrix, NULL, Color(0.5, 0.5, 0.5, 1.0));
+		}
 	}
 
 	//Swap Buffer

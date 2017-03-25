@@ -6,6 +6,8 @@ Camera::Camera()
 	_zNear = 0.1;
 	_zFar = 1000.0;
 	_fov = PI / 2.0;
+
+	Awake();
 }
 
 Camera::~Camera()

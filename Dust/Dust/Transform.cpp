@@ -9,6 +9,8 @@ Transform::Transform()
 
 	_dirty = false;
 	_worldMatrix = Matrix4x4::Identity;
+
+	Awake();
 }
 
 

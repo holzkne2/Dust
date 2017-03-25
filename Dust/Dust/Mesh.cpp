@@ -12,6 +12,8 @@ Mesh::Mesh()
 {
 	_vertexBuffer = 0;
 	_indexBuffer = 0;
+
+	_isInitialized = false;
 }
 
 
@@ -50,6 +52,121 @@ void Mesh::TriangleTest()
 
 void Mesh::CubeTest()
 {
+	_vertices.clear();
+	_colors.clear();
+	_triangles.clear();
+	_uvs.clear();
+
+	Color color = Color::Yellow;
+	/*color.r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	color.a = 1;*/
+
+	int facecount = 0;
+
+	//Top
+	_vertices.push_back(Vector3(-0.5, 0.5, -0.5));
+	_vertices.push_back(Vector3(-0.5, 0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, 0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, 0.5, -0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	//North
+	_vertices.push_back(Vector3(-0.5, 0.5, 0.5));
+	_vertices.push_back(Vector3(-0.5, -0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, 0.5, 0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	//East
+	_vertices.push_back(Vector3(0.5, 0.5, -0.5));
+	_vertices.push_back(Vector3(0.5, 0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, 0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, -0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	//South
+	_vertices.push_back(Vector3(-0.5, 0.5, -0.5));
+	_vertices.push_back(Vector3(0.5, 0.5, -0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, -0.5));
+	_vertices.push_back(Vector3(-0.5, -0.5, -0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	//West
+	_vertices.push_back(Vector3(-0.5, 0.5, -0.5));
+	_vertices.push_back(Vector3(-0.5, -0.5, -0.5));
+	_vertices.push_back(Vector3(-0.5, -0.5, 0.5));
+	_vertices.push_back(Vector3(-0.5, 0.5, 0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	//Bottom
+	_vertices.push_back(Vector3(-0.5, -0.5, -0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, -0.5));
+	_vertices.push_back(Vector3(0.5, -0.5, 0.5));
+	_vertices.push_back(Vector3(-0.5, -0.5, 0.5));
+
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 1);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4);
+	_triangles.push_back(facecount * 4 + 2);
+	_triangles.push_back(facecount * 4 + 3);
+
+	facecount++;
+
+	for (int i = 0; i < _vertices.size(); i++)
+		_colors.push_back(color);
+
+	for (int i = 0; i < _vertices.size(); i += 4)
+	{
+		_uvs.push_back(Vector2(0, 0));
+		_uvs.push_back(Vector2(1, 0));
+		_uvs.push_back(Vector2(1, 1));
+		_uvs.push_back(Vector2(0, 1));
+	}
+
+	RecalculateNormals();
 }
 
 void Mesh::RecalculateNormals()
@@ -78,6 +195,9 @@ void Mesh::RecalculateNormals()
 		}
 		_normals[x] /= normal_buffer[x].size();
 	}
+
+	normal_buffer->clear();
+	delete [] normal_buffer;
 }
 
 bool Mesh::Initialize(ID3D11Device* device)
@@ -89,7 +209,7 @@ bool Mesh::Initialize(ID3D11Device* device)
 	if (!result)
 		return false;
 
-	return true;
+	return _isInitialized = true;
 }
 
 void Mesh::Shutdown()
@@ -111,50 +231,53 @@ void Mesh::Render(ID3D11DeviceContext* deviceContext)
 //TODO: Adapt to vertex size
 bool Mesh::InitializeBuffers(ID3D11Device* device)
 {
-	appdata_full* Fullvertices = new appdata_full[_vertices.size()];
+	VertexType* Full_vertices = new VertexType[_vertices.size()];
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
 	for (int i = 0; i < _vertices.size(); i++)
 	{
-		Fullvertices[i].position = _vertices[i];
+		Full_vertices[i].position = _vertices[i];
 
 		if (_colors.size() <= i)
-			Fullvertices[i].color = Color();
+			Full_vertices[i].color = Color();
 		else
-			Fullvertices[i].color = _colors[i];
+			Full_vertices[i].color = _colors[i];
 
 		if (_uvs.size() <= i)
-			Fullvertices[i].uv = Vector2();
+			Full_vertices[i].uv = Vector2();
 		else
-			Fullvertices[i].uv = _uvs[i];
+			Full_vertices[i].uv = _uvs[i];
 
 		if (_normals.size() <= i)
-			Fullvertices[i].normal = Vector3();
+			Full_vertices[i].normal = Vector3();
 		else
-			Fullvertices[i].normal = _normals[i];
+			Full_vertices[i].normal = _normals[i];
+
+		if (_tangents.size() <= i)
+			Full_vertices[i].tangent = Vector3();
+		else
+			Full_vertices[i].tangent = _tangents[i];
 	}
 
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(appdata_base) * _vertices.size();
+	vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertices.size();
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = Fullvertices;
+	vertexData.pSysMem = Full_vertices;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
 	// Now create the vertex buffer.
 	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
 	// Set up the description of the static index buffer.
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -172,11 +295,9 @@ bool Mesh::InitializeBuffers(ID3D11Device* device)
 	// Create the index buffer.
 	result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
-	delete[] Fullvertices;
+	delete [] Full_vertices;
 
 	return true;
 }
@@ -207,7 +328,7 @@ void Mesh::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 
 	// Set vertex buffer stride and offset.
-	stride = sizeof(appdata_base);
+	stride = sizeof(VertexType);
 	offset = 0;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.

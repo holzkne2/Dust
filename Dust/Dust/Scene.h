@@ -10,14 +10,15 @@ public:
 	Scene();
 	virtual ~Scene();
 
-	void Awake();
-	void Start();
 	void Update();
 
 	void SampleScene();
 
-	std::vector<GameObject*>* GetGameObjects() { return &_gameObjects; }
-	std::vector<MeshRenderer*>* GetMeshRenderers() { return &_meshRenderers; }
+	const std::vector<GameObject*>* GetGameObjects() const { return &_gameObjects; }
+	const std::vector<MeshRenderer*>* GetMeshRenderers() const { return &_meshRenderers; }
+
+	void AddGameObject(GameObject*);
+	void AddMeshRenderer(MeshRenderer*);
 
 private:
 	std::vector<GameObject*> _gameObjects;

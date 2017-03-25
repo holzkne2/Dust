@@ -27,28 +27,30 @@ public:
 	void TriangleTest();
 	void CubeTest();
 
+	bool IsInitizlized() { return _isInitialized; }
+
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 
 private:
-	struct  appdata_base
-	{
-		Vector3 position;
-		Vector2 uv;
-		Vector3 normal;
-	};
+	//struct  appdata_base
+	//{
+	//	Vector3 position;
+	//	Vector2 uv;
+	//	Vector3 normal;
+	//};
 
-	struct  appdata_tan
-	{
-		Vector3 position;
-		Vector2 uv;
-		Vector3 normal;
-		Vector3 tangent;
-	};
+	//struct  appdata_tan
+	//{
+	//	Vector3 position;
+	//	Vector2 uv;
+	//	Vector3 normal;
+	//	Vector3 tangent;
+	//};
 
-	struct  appdata_full
+	struct  VertexType
 	{
 		Vector3 position;
 		Vector2 uv;
@@ -66,5 +68,7 @@ private:
 	std::vector<Vector3> _tangents;
 
 	ID3D11Buffer *_vertexBuffer, *_indexBuffer;
+
+	bool _isInitialized;
 };
 

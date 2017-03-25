@@ -583,21 +583,34 @@ inline Matrix4x4 Matrix4x4::Scale(float s)
 inline Matrix4x4 Matrix4x4::Translate(const Vector3& pos)
 {
 	Matrix4x4 r = Matrix4x4::Identity;
-	r._m[0][3] = pos.x;
-	r._m[1][3] = pos.y;
-	r._m[2][3] = pos.z;
+	r._m[3][0] = pos.x;
+	r._m[3][1] = pos.y;
+	r._m[3][2] = -pos.z;
 	return r;
 }
 
 inline Matrix4x4 Matrix4x4::Perspective(float fov, float aspect, float zNear, float zFar)
 {
-	float xmax = zNear * tan(fov / 2);
+	Matrix4x4 r = Matrix4x4::Zero;
+
+	float frustumDepth = zFar - zNear;
+	float oneOverDepth = 1.0 / frustumDepth;
+
+	r._22 = 1 / tan(0.5 * fov);
+	r._11 = r._22 / aspect;
+	r._33 = zFar * oneOverDepth;
+	r._43 = (-zFar * zNear) * oneOverDepth;
+	r._34 = 1;
+
+	return r;
+
+	/*float xmax = zNear * tan(fov / 2);
 	float xmin = -xmax;
 
 	float ymax = xmax / aspect;
 	float ymin = -ymax;
 
-	return Matrix4x4::Frustum(xmin, xmax, ymin, ymax, zNear, zFar);
+	return Matrix4x4::Frustum(xmin, xmax, ymin, ymax, zNear, zFar);*/
 }
 
 inline Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m)
@@ -605,9 +618,9 @@ inline Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m)
 	Matrix4x4 r;
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; i++)
+		for (int j = 0; j < 4; j++)
 		{
-			r._m[i][j] = m._m[j][i];
+			r._m[j][i] = m._m[i][j];
 		}
 	}
 	return r;
@@ -615,7 +628,11 @@ inline Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m)
 
 inline Matrix4x4 Matrix4x4::TRS(const Vector3& pos, const Quaternion& q, const Vector3& s)
 {
-	return Matrix4x4::Scale(s) * Matrix4x4::Rotation(q) * Matrix4x4::Translate(pos);
+	Matrix4x4 r = Matrix4x4::Identity;
+	r *= Matrix4x4::Scale(s);
+	r *= Matrix4x4::Rotation(q);
+	r *= Matrix4x4::Translate(pos);
+	return r;
 }
 
 inline bool Matrix4x4::operator == (const Matrix4x4& m) const

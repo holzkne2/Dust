@@ -22,6 +22,9 @@ public:
 	void BeginScene(float, float, float);
 	void EndScene();
 
+	ID3D11Device* GetDevice() { return _device; }
+	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext; }
+
 private:
 	bool _vsync_enabled;
 	int _videoCardMemory;

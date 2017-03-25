@@ -11,8 +11,6 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	virtual void Awake();
-	virtual void Start();
 	virtual void Update();
 
 	Transform* GetTransform() { return &_transform; }

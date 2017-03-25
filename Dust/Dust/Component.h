@@ -11,7 +11,6 @@ public:
 	virtual ~Component();
 
 	virtual void Awake() {};
-	virtual void Start() {};
 	virtual void Update() {};
 
 	//TODO: Edit Gameobject's component list / Make Less Hackable
