@@ -31,5 +31,7 @@ private:
 	int _screenHeight;
 
 	bool _fullscreen;
+
+	Color _ambient;
 };
 

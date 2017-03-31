@@ -6,14 +6,14 @@ MeshRenderer::MeshRenderer()
 
 	_shader = 0;
 	
-	Awake();
+	//Awake();
 }
 
 
 MeshRenderer::~MeshRenderer()
 {
-	//if (_shader)
-	//	delete _shader;
+	if (_shader)
+		delete _shader;
 }
 
 void MeshRenderer::Awake()

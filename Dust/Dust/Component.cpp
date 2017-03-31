@@ -3,7 +3,6 @@
 
 Component::Component()
 {
-	Awake();
 }
 
 

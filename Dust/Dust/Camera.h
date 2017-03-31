@@ -11,6 +11,8 @@ public:
 	Camera();
 	virtual ~Camera();
 
+	virtual void Awake() {}
+
 	Matrix4x4 GetViewport();
 	Matrix4x4 GetViewMatrix();
 

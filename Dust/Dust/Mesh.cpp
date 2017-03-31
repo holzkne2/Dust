@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include <time.h>
+
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -28,6 +30,7 @@ void Mesh::TriangleTest()
 	_triangles.clear();
 	_uvs.clear();
 
+	//srand(time(NULL));
 	Color color;
 	color.r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	color.g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);

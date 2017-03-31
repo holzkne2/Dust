@@ -5,6 +5,7 @@
 #include "System.h"
 #include "Camera.h"
 #include "MeshRenderer.h"
+#include "Light.h"
 
 #include <SDL_syswm.h>
 #include <Windows.h>
@@ -26,6 +27,8 @@ Graphics::Graphics()
 	_screenHeight = 600;
 
 	_fullscreen = false;
+
+	_ambient = Color(0.1, 0.1, 0.1);
 
 	Awake();
 }
@@ -63,7 +66,9 @@ void Graphics::Render()
 	Camera* camera = 0;
 	const std::vector<GameObject*>* gameObjects = System::getInstance().GetScene()->GetGameObjects();
 	const std::vector<MeshRenderer*>* meshRenderers = System::getInstance().GetScene()->GetMeshRenderers();
+	const std::vector<Light*>* lights = System::getInstance().GetScene()->GetLights();
 	MeshRenderer* meshRendererPointer = 0;
+	Light* lightPointer = 0;
 	
 	//Clear Buffer
 	_direct3d->BeginScene(0.1, 0.1, 0.1);
@@ -84,23 +89,32 @@ void Graphics::Render()
 		viewMatrix = camera->GetViewMatrix();
 		projectionMatrix = camera->GetViewport();
 
-		for (unsigned int i = 0; i < meshRenderers->size(); ++i)
+		unsigned int l = 0;
+		do
 		{
-			meshRendererPointer = meshRenderers->at(i);
-			worldMatrix = meshRendererPointer->GetGameObject()->GetTransform()->GetWorldMatrix();
-			
-			if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
-				if(!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
-					std::cout << "Mesh Initialize Failed" << std::endl;
-			meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
-			
-			if (!meshRendererPointer->GetShader()->IsInitizlized())
-				if (!meshRendererPointer->GetShader()->Initialize(_direct3d->GetDevice(), *_hwnd))
-					std::cout << "Shader Initialize Failed" << std::endl;
-			meshRendererPointer->GetShader()->Render(_direct3d->GetDeviceContext(),
-				meshRendererPointer->GetSharedMesh()->GetIndexCount(),
-				worldMatrix, viewMatrix, projectionMatrix, NULL, Color(0.5, 0.5, 0.5, 1.0));
-		}
+			if (lights->size() > 0)
+				lightPointer = lights->at(l);
+
+			for (unsigned int i = 0; i < meshRenderers->size(); ++i)
+			{
+				meshRendererPointer = meshRenderers->at(i);
+				worldMatrix = meshRendererPointer->GetGameObject()->GetTransform()->GetWorldMatrix();
+
+				if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
+					if (!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
+						std::cout << "Mesh Initialize Failed" << std::endl;
+				meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
+
+				if (!meshRendererPointer->GetShader()->IsInitizlized())
+					if (!meshRendererPointer->GetShader()->Initialize(_direct3d->GetDevice(), *_hwnd))
+						std::cout << "Shader Initialize Failed" << std::endl;
+				meshRendererPointer->GetShader()->Render(_direct3d->GetDeviceContext(),
+					meshRendererPointer->GetSharedMesh()->GetIndexCount(),
+					worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);
+			}
+
+			++l;
+		} while (l < lights->size());
 	}
 
 	//Swap Buffer

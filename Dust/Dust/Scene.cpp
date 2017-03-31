@@ -14,6 +14,7 @@ Scene::Scene()
 {
 	_gameObjects = std::vector<GameObject*>();
 	_meshRenderers = std::vector<MeshRenderer*>();
+	_lights = std::vector<Light*>();
 }
 
 Scene::~Scene()
@@ -23,7 +24,10 @@ Scene::~Scene()
 		delete _gameObjects[i];
 	}
 	_gameObjects.clear();
+
 	_meshRenderers.clear();
+
+	_lights.clear();
 }
 
 void Scene::Update()
@@ -36,15 +40,24 @@ void Scene::Update()
 
 void Scene::SampleScene()
 {
+	//Create Main Camera
 	GameObject* camera = new GameObject();
 	camera->AddComponent<Camera>();
 	AddGameObject(camera);
 	
+	//Create Light Source
+	GameObject* light = new GameObject();
+	light->AddComponent<Light>();
+	AddGameObject(light);
+
+	//Create Object(s)
+
 	//TODO:Better Shader Handlers
 	UnlitColorShader* unlitColorShader = new UnlitColorShader();
 
 	GameObject* simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, -5));
+	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(15, 15, 15)));
 	simpleMesh->AddComponent<MeshRenderer>();
 	simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
 	simpleMesh->GetComponent<MeshRenderer>()->SetShader(unlitColorShader);
@@ -66,4 +79,9 @@ void Scene::AddGameObject(GameObject* gameObject)
 void Scene::AddMeshRenderer(MeshRenderer* meshRenderer)
 {
 	_meshRenderers.push_back(meshRenderer);
+}
+
+void Scene::AddLight(Light* light)
+{
+	_lights.push_back(light);
 }

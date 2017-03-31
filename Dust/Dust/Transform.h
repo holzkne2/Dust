@@ -11,6 +11,8 @@ public:
 	Transform();
 	virtual ~Transform();
 
+	virtual void Awake() {}
+
 	void SetPosition(const Vector3& position) { _dirty = true; _position = position; }
 	Vector3 GetPosition() { return _position; }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
+#include "ResourceManager.h"
 #include "Scene.h"
 
 class System
@@ -23,5 +24,6 @@ public:
 
 private:
 	Graphics *_graphics;
+	ResourceManager *_resources;
 	Scene *_scene;
 };

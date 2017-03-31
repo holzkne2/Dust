@@ -47,5 +47,6 @@ template<typename T> T* GameObject::AddComponent()
 	}
 	static_cast<Component*>(add)->SetGameObject(this);
 	_components.push_back(add);
+	add->Awake();
 	return add;
 }

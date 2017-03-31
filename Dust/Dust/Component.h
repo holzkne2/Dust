@@ -10,7 +10,7 @@ public:
 	Component();
 	virtual ~Component();
 
-	virtual void Awake() {};
+	virtual void Awake() = 0;
 	virtual void Update() {};
 
 	//TODO: Edit Gameobject's component list / Make Less Hackable

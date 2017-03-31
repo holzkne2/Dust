@@ -13,6 +13,7 @@
 System::System()
 {
 	_graphics = 0;
+	_resources = 0;
 	_scene = 0;
 }
 
@@ -27,6 +28,8 @@ void System::Initialize()
 	}
 
 	_graphics = &Graphics::getInstance();
+
+	_resources = &ResourceManager::getInstance();
 }
 
 void System::Run()
@@ -66,6 +69,8 @@ void System::Shutdown()
 {
 	if (_scene)
 		delete _scene;
+	if (_resources)
+		_resources->ShutDown();
 	if (_graphics)
 		_graphics->ShutDown();
 
