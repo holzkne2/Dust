@@ -1,6 +1,6 @@
 #include "Scene.h"
-#include "UnlitColorShader.h"
 #include "Camera.h"
+#include "ResourceManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -52,23 +52,31 @@ void Scene::SampleScene()
 
 	//Create Object(s)
 
-	//TODO:Better Shader Handlers
-	UnlitColorShader* unlitColorShader = new UnlitColorShader();
+	Material* mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(1));
 
 	GameObject* simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, -5));
 	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(15, 15, 15)));
 	simpleMesh->AddComponent<MeshRenderer>();
 	simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
-	simpleMesh->GetComponent<MeshRenderer>()->SetShader(unlitColorShader);
+	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
 	AddGameObject(simpleMesh);
 
-	//simpleMesh = new GameObject();
-	//simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, 5));
-	//simpleMesh->AddComponent<MeshRenderer>();
-	//simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
-	//simpleMesh->GetComponent<MeshRenderer>()->SetShader(unlitColorShader);
-	//AddGameObject(simpleMesh);
+	simpleMesh = new GameObject();
+	simpleMesh->GetTransform()->SetPosition(Vector3(0, 2, -5));
+	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(-15, -15, -15)));
+	simpleMesh->AddComponent<MeshRenderer>();
+	simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
+	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
+	AddGameObject(simpleMesh);
+
+	simpleMesh = new GameObject();
+	simpleMesh->GetTransform()->SetPosition(Vector3(0, -2, -5));
+	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(-15, -15, -15)));
+	simpleMesh->AddComponent<MeshRenderer>();
+	simpleMesh->GetComponent<MeshRenderer>()->GetSharedMesh()->CubeTest();
+	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
+	AddGameObject(simpleMesh);
 }
 
 void Scene::AddGameObject(GameObject* gameObject)

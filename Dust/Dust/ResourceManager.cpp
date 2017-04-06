@@ -1,12 +1,8 @@
 #include "ResourceManager.h"
-#include "boost\filesystem.hpp"
-#include <iostream>
-#include <sstream>
-#include <vector>
 #define _CRT_SECURE_NO_DEPRECATE
 #include <stdio.h>
-
 #include "Material.h"
+#include <iostream>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -54,18 +50,6 @@ void ResourceManager::ShutDown()
 	_resources.clear();
 }
 
-vector<string> GetTokens(string str, char delimiter)
-{
-	vector<string> r;
-	istringstream ss(str);
-	string token;
-
-	while (getline(ss, token, delimiter))
-		r.push_back(token);
-
-	return r;
-}
-
 void ResourceManager::FindResources(string dirPath)
 {
 	cout << "Folder Found: " + dirPath << endl;
@@ -86,38 +70,40 @@ void ResourceManager::FindResources(string dirPath)
 				cout << "Meta Missing: " + currPath << endl;
 				continue;
 			}
-			FILE* metaFile;
-			long lSize;
-			char* buffer;
-			size_t  result;
+			//FILE* metaFile;
+			//long lSize;
+			//char* buffer;
+			//size_t  result;
 
-			metaFile = fopen(metaPath.c_str(), "r");
-			
-			fseek(metaFile, 0, SEEK_END);
-			lSize = ftell(metaFile);
-			rewind(metaFile);
+			//metaFile = fopen(metaPath.c_str(), "r");
+			//
+			//fseek(metaFile, 0, SEEK_END);
+			//lSize = ftell(metaFile);
+			//rewind(metaFile);
 
-			buffer = (char*)malloc(sizeof(char)*lSize);
-			if (buffer == NULL)
-			{
-				cout << "Memory Error!" << endl;
-				fclose(metaFile);
-				free(buffer);
-				continue;
-			}
+			//buffer = (char*)malloc(sizeof(char)*lSize);
+			//if (buffer == NULL)
+			//{
+			//	cout << "Memory Error!" << endl;
+			//	fclose(metaFile);
+			//	free(buffer);
+			//	continue;
+			//}
 
-			result = fread(buffer, 1, lSize, metaFile);
-			if (result != lSize)
-			{
-				cout << "Reading Error!" << endl;
-				fclose(metaFile);
-				free(buffer);
-				continue;
-			}
-			istringstream metaData(buffer);
+			//result = fread(buffer, 1, lSize, metaFile);
+			//if (result != lSize)
+			//{
+			//	cout << "Reading Error!" << endl;
+			//	fclose(metaFile);
+			//	free(buffer);
+			//	continue;
+			//}
+			//istringstream metaData(buffer);
 
-			fclose(metaFile);
-			free(buffer);
+			//fclose(metaFile);
+			//free(buffer);
+
+			vector<string> data = ReadFile(metaPath);
 
 			//Choose Type
 			string ext = path(currPath).extension().string();
@@ -129,10 +115,9 @@ void ResourceManager::FindResources(string dirPath)
 				resource->SetType(Resource_Material);
 				resource->SetPath(currPath);
 
-				string line;
-				while (getline(metaData, line))
+				for (unsigned int l = 0; l < data.size(); ++l)
 				{
-					vector<string> tokens = GetTokens(line, ' ');
+					vector<string> tokens = GetTokens(data[l], ' ');
 					for (unsigned int i = 0; i < tokens.size(); ++i)
 					{
 						if (tokens[i] == "_guid:")
@@ -147,4 +132,14 @@ void ResourceManager::FindResources(string dirPath)
 				_resources.insert(pair<unsigned long, Resource*>(resource->GetResourceID(), resource));
 		}
 	}
+}
+
+Resource* ResourceManager::GetResource(unsigned long id)
+{
+	Resource* r = 0;
+	r = _resources.find(id)->second;
+	//TODO: If did not find
+	if (!r->IsLoaded())
+		r->Load();
+	return r;
 }

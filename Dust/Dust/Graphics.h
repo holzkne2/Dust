@@ -22,6 +22,10 @@ public:
 	int GetScreenWidth() { return _screenWidth; }
 	int GetScreenHeight() { return _screenHeight; }
 
+	Direct3D* const GetDirect3D() { return _direct3d; }
+
+	HWND* const GetHWND() { return _hwnd; }
+
 private:
 	SDL_Window *_window;
 	Direct3D *_direct3d;

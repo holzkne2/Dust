@@ -1,7 +1,7 @@
 #pragma once
 #include "Resource.h"
 #include <map>
-#include <string>
+#include "FileHelperDust.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -26,10 +26,11 @@ public:
 	void Awake();
 	void ShutDown();
 
+	Resource* GetResource(unsigned long);
+
 private:
 	void FindResources(std::string);
 
 private:
 	std::map<unsigned long, Resource*> _resources;
 };
-

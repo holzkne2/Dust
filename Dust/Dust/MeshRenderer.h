@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Material.h"
 
 //TODO: Render Function
 class MeshRenderer :
@@ -15,12 +16,12 @@ public:
 
 	Mesh* GetSharedMesh() { return &_mesh; }
 
-	void SetShader(Shader*);
-	Shader* GetShader() { return _shader; }
+	void SetMaterial(Material* material) { _material = material; }
+	Material* GetSharedMaterial() { return _material; }
 
 private:
 	//TODO: Make Pointer
 	Mesh _mesh;
-	Shader* _shader;
+	Material* _material;
 };
 

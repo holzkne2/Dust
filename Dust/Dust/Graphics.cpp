@@ -105,12 +105,16 @@ void Graphics::Render()
 						std::cout << "Mesh Initialize Failed" << std::endl;
 				meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
 
-				if (!meshRendererPointer->GetShader()->IsInitizlized())
+				meshRendererPointer->GetSharedMaterial()->Render(_direct3d->GetDeviceContext(),
+					meshRendererPointer->GetSharedMesh()->GetIndexCount(),
+					worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);
+
+				/*if (!meshRendererPointer->GetShader()->IsInitizlized())
 					if (!meshRendererPointer->GetShader()->Initialize(_direct3d->GetDevice(), *_hwnd))
 						std::cout << "Shader Initialize Failed" << std::endl;
 				meshRendererPointer->GetShader()->Render(_direct3d->GetDeviceContext(),
 					meshRendererPointer->GetSharedMesh()->GetIndexCount(),
-					worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);
+					worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);*/
 			}
 
 			++l;
