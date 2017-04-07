@@ -26,6 +26,8 @@ public:
 	
 	Matrix4x4 GetWorldMatrix();
 
+	Vector3 GetForward();
+
 private:
 	Vector3 _position;
 	Quaternion _rotation;

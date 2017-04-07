@@ -29,7 +29,7 @@ private:
 
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, Matrix4x4, Matrix4x4, Matrix4x4);
+	bool SetShaderParameters(ID3D11DeviceContext*, Matrix4x4, Matrix4x4, Matrix4x4, Light*, Color);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
@@ -42,10 +42,10 @@ private:
 
 	struct  LightBuffer
 	{
+		Color ambient;
 		Color lightColor;
 		Vector3 direction;
 		float atten;
-		Color ambient;
 	};
 
 private:
@@ -55,6 +55,8 @@ private:
 	ID3D11Buffer* _matrixBuffer;
 
 	wstring _shaderfilename;
+
+	ID3D11Buffer* _lightBuffer;
 
 	map<string, Texture2D*> _textures;
 	ID3D11SamplerState* _sampleState;

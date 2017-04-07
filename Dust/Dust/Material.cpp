@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "ResourceManager.h"
 #include <iostream>
+#include "GameObject.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -23,6 +24,7 @@ Material::Material()
 	_layout = 0;
 	_matrixBuffer = 0;
 
+	_lightBuffer = 0;
 	_sampleState = 0;
 }
 
@@ -67,6 +69,12 @@ void Material::Unload()
 		_vertexShader = 0;
 	}
 
+	if (_lightBuffer)
+	{
+		_lightBuffer->Release();
+		_lightBuffer = 0;
+	}
+
 	_textures.clear();
 
 	if (_sampleState)
@@ -81,7 +89,7 @@ void Material::Unload()
 void Material::Render(ID3D11DeviceContext* deviceContext, int indexCount, Matrix4x4 worldMatrix,
 	Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, Light* light, Color ambient)
 {
-	if (!SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix))
+	if (!SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, light, ambient))
 		return;
 
 	// Now render the prepared buffers with the shader.
@@ -125,6 +133,7 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 	unsigned int numElements;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC lightBufferDesc;
 
 	// Initialize the pointers this function will use to null.
 	errorMessage = 0;
@@ -277,6 +286,19 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 	if (FAILED(result))
 		return false;
 
+	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.ByteWidth = sizeof(LightBuffer);
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.MiscFlags = 0;
+	lightBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	result = device->CreateBuffer(&lightBufferDesc, NULL, &_lightBuffer);
+	if (FAILED(result))
+		return false;
+
 	return true;
 }
 
@@ -315,11 +337,12 @@ void Material::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd)
 }
 
 bool Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4 worldMatrix,
-	Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+	Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, Light* light, Color ambient)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
+	MatrixBufferType* matrixDataPtr;
+	LightBuffer* lightDataPtr;
 	unsigned int bufferNumber;
 
 	// Transpose the matrices to prepare them for the shader.
@@ -333,12 +356,12 @@ bool Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4
 		return false;
 
 	// Get a pointer to the data in the constant buffer.
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	matrixDataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	matrixDataPtr->world = worldMatrix;
+	matrixDataPtr->view = viewMatrix;
+	matrixDataPtr->projection = projectionMatrix;
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(_matrixBuffer, 0);
@@ -356,6 +379,36 @@ bool Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4
 		//TODO: Mutli Textures?
 		deviceContext->PSSetShaderResources(0, 1, &texture);
 	}
+
+	// Lock the light constant buffer so it can be written to.
+	result = deviceContext->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	lightDataPtr = (LightBuffer*)mappedResource.pData;
+
+	lightDataPtr->ambient = ambient;
+	if (light)
+	{
+		lightDataPtr->lightColor = light->GetColor();
+		lightDataPtr->direction = light->GetGameObject()->GetTransform()->GetForward();
+		lightDataPtr->atten = light->GetIntensity();
+	}
+	else
+	{
+		lightDataPtr->lightColor = Color::Black;
+		lightDataPtr->direction = Vector3::Zero;
+		lightDataPtr->atten = 0;
+	}
+
+	// Unlock the constant buffer.
+	deviceContext->Unmap(_lightBuffer, 0);
+
+	// Set the position of the light constant buffer in the pixel shader.
+	bufferNumber = 0;
+
+	// Finally set the light constant buffer in the pixel shader with the updated values.
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_lightBuffer);
 
 	return true;
 }

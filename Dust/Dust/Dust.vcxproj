@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MathF.inl" />
+    <None Include="Standard.shader" />
     <None Include="UnlitTexture.shader" />
   </ItemGroup>
   <ItemGroup>

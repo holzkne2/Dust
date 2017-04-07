@@ -259,6 +259,27 @@ inline Vector3 operator* (float s, const Vector3& v)
 	return Vector3(v.x * s, v.y * s, v.z * s);
 }
 
+inline Vector3 operator* (const Quaternion& q, const Vector3& v)
+{
+	Vector3 r;
+	float x2 = q.x * 2.0;
+	float y2 = q.y * 2.0;
+	float z2 = q.z * 2.0;
+	float xx2 = q.x * x2;
+	float yy2 = q.y * y2;
+	float zz2 = q.z * z2;
+	float xy2 = q.x * y2;
+	float xz2 = q.x * z2;
+	float yz2 = q.y * z2;
+	float wx2 = q.w * x2;
+	float wy2 = q.w * y2;
+	float wz2 = q.w * z2;
+	r.x = (1.0 - (yy2 + zz2)) * v.x + (xy2 - wz2) * v.y + (xz2 + wy2) * v.z;
+	r.y = (xy2 + wz2) * v.x + (1.0 - (xx2 + zz2)) * v.y + (yz2 - wx2) * v.z;
+	r.z = (xz2 - wy2) * v.x + (yz2 + wx2) * v.y + (1.0 - (xx2 + yy2)) * v.z;
+	return r;
+}
+
 // Quaternion
 
 inline Vector3 Quaternion::EulerAngles() const
@@ -537,7 +558,7 @@ inline Matrix4x4 Matrix4x4::Inverse(const Matrix4x4& m)
 
 inline Matrix4x4 Matrix4x4::Rotation(const Quaternion& q)
 {
-	Matrix4x4 r;
+	Matrix4x4 r = Matrix4x4::Zero;
 
 	const float x2 = q.x + q.x;  const float y2 = q.y + q.y;  const float z2 = q.z + q.z;
 	const float xx = q.x * x2;   const float xy = q.x * y2;   const float xz = q.x * z2;
@@ -547,15 +568,15 @@ inline Matrix4x4 Matrix4x4::Rotation(const Quaternion& q)
 	r._m[0][0] = 1.0f - (yy + zz);
 	r._m[1][0] = xy - wz;
 	r._m[2][0] = xz + wy;
-	r._m[3][0] = q.x;
+	//r._m[3][0] = q.x;
 	r._m[0][1] = xy + wz;
 	r._m[1][1] = 1.0f - (xx + zz);
 	r._m[2][1] = yz - wx;
-	r._m[3][1] = q.y;
+	//r._m[3][1] = q.y;
 	r._m[0][2] = xz - wy;
 	r._m[1][2] = yz + wx;
 	r._m[2][2] = 1.0f - (xx + yy);
-	r._m[3][2] = q.z;
+	//r._m[3][2] = q.z;
 	r._m[0][3] = 0.0f;
 	r._m[1][3] = 0.0f;
 	r._m[2][3] = 0.0f;

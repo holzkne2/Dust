@@ -164,6 +164,8 @@ namespace MathF
 	Quaternion operator/ (const Quaternion& a, const Quaternion& b);
 	Quaternion operator* (float s, const Quaternion& q);
 
+	Vector3 operator* (const Quaternion& q, const Vector3& v);
+
 	struct Matrix4x4
 	{
 		//variables

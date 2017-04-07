@@ -23,3 +23,8 @@ Matrix4x4 Transform::GetWorldMatrix()
 	_dirty = false;
 	return _worldMatrix = Matrix4x4::TRS(_position, _rotation, _scale);
 }
+
+Vector3 Transform::GetForward()
+{
+	return _rotation * Vector3::Forward;
+}
