@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include "Mesh.h"
-#include "Shader.h"
 #include "Material.h"
 
 //TODO: Render Function
