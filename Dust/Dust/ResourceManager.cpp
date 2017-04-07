@@ -1,8 +1,9 @@
 #include "ResourceManager.h"
 #define _CRT_SECURE_NO_DEPRECATE
 #include <stdio.h>
-#include "Material.h"
 #include <iostream>
+#include "Material.h"
+#include "Texture2D.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -70,50 +71,37 @@ void ResourceManager::FindResources(string dirPath)
 				cout << "Meta Missing: " + currPath << endl;
 				continue;
 			}
-			//FILE* metaFile;
-			//long lSize;
-			//char* buffer;
-			//size_t  result;
-
-			//metaFile = fopen(metaPath.c_str(), "r");
-			//
-			//fseek(metaFile, 0, SEEK_END);
-			//lSize = ftell(metaFile);
-			//rewind(metaFile);
-
-			//buffer = (char*)malloc(sizeof(char)*lSize);
-			//if (buffer == NULL)
-			//{
-			//	cout << "Memory Error!" << endl;
-			//	fclose(metaFile);
-			//	free(buffer);
-			//	continue;
-			//}
-
-			//result = fread(buffer, 1, lSize, metaFile);
-			//if (result != lSize)
-			//{
-			//	cout << "Reading Error!" << endl;
-			//	fclose(metaFile);
-			//	free(buffer);
-			//	continue;
-			//}
-			//istringstream metaData(buffer);
-
-			//fclose(metaFile);
-			//free(buffer);
 
 			vector<string> data = ReadFile(metaPath);
 
 			//Choose Type
 			string ext = path(currPath).extension().string();
-			//Material
 			Resource* resource = 0;
+			//Material
 			if (ext == ".mat")
 			{
 				resource = new Material();
 				resource->SetType(Resource_Material);
-				resource->SetPath(currPath);
+				resource->SetPath(stows(currPath));
+
+				for (unsigned int l = 0; l < data.size(); ++l)
+				{
+					vector<string> tokens = GetTokens(data[l], ' ');
+					for (unsigned int i = 0; i < tokens.size(); ++i)
+					{
+						if (tokens[i] == "_guid:")
+						{
+							resource->SetResourceID(stoul(tokens[++i]));
+						}
+					}
+				}
+			}
+			//Texture2D
+			else if (ext == ".dds")
+			{
+				resource = new Texture2D();
+				resource->SetType(Resource_Texture);
+				resource->SetPath(stows(currPath));
 
 				for (unsigned int l = 0; l < data.size(); ++l)
 				{

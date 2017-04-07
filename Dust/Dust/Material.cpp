@@ -3,6 +3,8 @@
 #include "Graphics.h"
 #include <fstream>
 #include <algorithm>
+#include "ResourceManager.h"
+#include <iostream>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -20,6 +22,8 @@ Material::Material()
 	_pixelShader = 0;
 	_layout = 0;
 	_matrixBuffer = 0;
+
+	_sampleState = 0;
 }
 
 Material::~Material()
@@ -39,7 +43,6 @@ void Material::Load()
 
 void Material::Unload()
 {
-
 	if (_matrixBuffer)
 	{
 		_matrixBuffer->Release();
@@ -64,6 +67,14 @@ void Material::Unload()
 		_vertexShader = 0;
 	}
 
+	_textures.clear();
+
+	if (_sampleState)
+	{
+		_sampleState->Release();
+		_sampleState = 0;
+	}
+
 	_isLoaded = false;
 }
 
@@ -79,18 +90,22 @@ void Material::Render(ID3D11DeviceContext* deviceContext, int indexCount, Matrix
 
 bool Material::ReadMatFile()
 {
-	vector<string> data = ReadFile(_path);
+	vector<string> tokens = GetTokensFromFile(wstos(_path));
 
-	for (unsigned int l = 0; l < data.size(); ++l)
+	for (unsigned int i = 0; i < tokens.size(); ++i)
 	{
-		vector<string> tokens = GetTokens(data[l], ' ');
-		for (unsigned int i = 0; i < tokens.size(); ++i)
+		if (tokens[i] == "_shader:")
 		{
-			if (tokens[i] == "_Shader:")
+			_shaderfilename = stows(tokens[++i]);
+		}
+		else if (tokens[i] == "_textures:")
+		{
+			while (++i < tokens.size() && tokens[i] == "-")
 			{
-				string temp = tokens[++i];
-				_shaderfilename = wstring(temp.length(), L' ');
-				std::copy(temp.begin(), temp.end(), _shaderfilename.begin());
+				string name = tokens[++i];
+				unsigned long guid = stoul(tokens[++i]);
+				_textures.insert(pair<string, Texture2D*>(name,
+					static_cast<Texture2D*>(ResourceManager::getInstance().GetResource(guid))));
 			}
 		}
 	}
@@ -105,8 +120,10 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
+
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[5];
 	unsigned int numElements;
+	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
 	// Initialize the pointers this function will use to null.
@@ -122,11 +139,13 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 		// If the shader failed to compile it should have writen something to the error message.
 		if (errorMessage)
 		{
+			std::cout << "Failed To Compile Vertex Shader: " << _shaderfilename << std::endl;
 			OutputShaderErrorMessage(errorMessage, hwnd);
 		}
 		// If there was nothing in the error message then it simply could not find the shader file itself.
 		else
 		{
+			std::cout << "Failed To Find Shader: " << _shaderfilename << std::endl;
 			MessageBox(hwnd, _shaderfilename.c_str(), L"Missing Shader File", MB_OK);
 		}
 
@@ -140,10 +159,16 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 	{
 		// If the shader failed to compile it should have writen something to the error message.
 		if (errorMessage)
+		{
+			std::cout << "Failed To Compile Pixel Shader: " << _shaderfilename << std::endl;
 			OutputShaderErrorMessage(errorMessage, hwnd);
+		}
 		// If there was  nothing in the error message then it simply could not find the file itself.
 		else
+		{
+			std::cout << "Failed To Find Shader: " << _shaderfilename << std::endl;
 			MessageBox(hwnd, _shaderfilename.c_str(), L"Missing Shader File", MB_OK);
+		}
 
 		return false;
 	}
@@ -215,6 +240,29 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = 0;
+
+	// Create a texutre sampler state description.
+	// TODO: Make per texture
+	if (_textures.size() > 0)
+	{
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.MipLODBias = 0.0f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		samplerDesc.BorderColor[0] = 0;
+		samplerDesc.BorderColor[1] = 0;
+		samplerDesc.BorderColor[2] = 0;
+		samplerDesc.BorderColor[3] = 0;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		result = device->CreateSamplerState(&samplerDesc, &_sampleState);
+		if (FAILED(result))
+			return false;
+	}
 
 	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -301,6 +349,14 @@ bool Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 
+	// Set shader texture resource in the pixel shader.
+	for (auto itr = _textures.begin(); itr != _textures.end(); ++itr)
+	{
+		ID3D11ShaderResourceView* texture = itr->second->GetTexure();
+		//TODO: Mutli Textures?
+		deviceContext->PSSetShaderResources(0, 1, &texture);
+	}
+
 	return true;
 }
 
@@ -313,7 +369,10 @@ void Material::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 	deviceContext->VSSetShader(_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(_pixelShader, NULL, 0);
 
+	// Set the sampler state in the pixel shader.
+	if (_sampleState)
+		deviceContext->PSSetSamplers(0, 1, &_sampleState);
+
 	// Render the triangle.
-	//TODO: Start index
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 }

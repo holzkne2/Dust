@@ -52,7 +52,7 @@ void Scene::SampleScene()
 
 	//Create Object(s)
 
-	Material* mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(1));
+	Material* mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(3));
 
 	GameObject* simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, -5));

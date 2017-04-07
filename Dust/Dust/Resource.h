@@ -31,8 +31,8 @@ public:
 	void SetResourceID(unsigned long resourceID) { _resourceID = resourceID; }
 	unsigned long GetResourceID() { return _resourceID; }
 
-	void SetPath(std::string path) { _path = path; }
-	std::string GetPath() const { return _path; }
+	void SetPath(std::wstring path) { _path = path; }
+	std::wstring GetPath() const { return _path; }
 
 	void SetType(ResourceType type) { _type = type; }
 	ResourceType GetType() { return _type; }
@@ -41,7 +41,7 @@ public:
 
 protected:
 	unsigned long _resourceID;
-	std::string _path;
+	std::wstring _path;
 	ResourceType _type;
 	bool _isLoaded;
 };

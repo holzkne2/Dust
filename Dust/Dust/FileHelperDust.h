@@ -9,3 +9,9 @@ using namespace std;
 vector<string> GetTokens(string str, char delimiter);
 
 vector<string> ReadFile(string path);
+
+vector<string> GetTokensFromFile(string path);
+
+wstring stows(string str);
+
+string wstos(wstring str);

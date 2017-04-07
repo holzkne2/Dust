@@ -97,6 +97,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UnlitColorShader.cpp" />
   </ItemGroup>
@@ -119,11 +120,13 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UnlitColorShader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathF.inl" />
+    <None Include="UnlitTexture.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="UnlitColor.shader">

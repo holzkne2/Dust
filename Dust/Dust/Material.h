@@ -5,6 +5,8 @@
 #include "MathF.h"
 #include "Light.h"
 #include "FileHelperDust.h"
+#include <map>
+#include "Texture2D.h"
 
 using namespace MathF;
 using namespace std;
@@ -53,4 +55,7 @@ private:
 	ID3D11Buffer* _matrixBuffer;
 
 	wstring _shaderfilename;
+
+	map<string, Texture2D*> _textures;
+	ID3D11SamplerState* _sampleState;
 };

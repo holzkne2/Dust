@@ -34,3 +34,30 @@ vector<string> ReadFile(string path)
 	
 	return r;
 }
+
+vector<string> GetTokensFromFile(string path)
+{
+	vector<string> r;
+	vector<string> tokens;
+	vector<string> lines = ReadFile(path);
+	for (unsigned int i = 0; i < lines.size(); ++i)
+	{
+		tokens = GetTokens(lines[i], ' ');
+		r.insert(r.end(), tokens.begin(), tokens.end());
+	}
+	return r;
+}
+
+wstring stows(string str)
+{
+	wstring r = wstring(str.length(), L' ');
+	std::copy(str.begin(), str.end(), r.begin());
+	return r;
+}
+
+string wstos(wstring str)
+{
+	string r = string(str.length(), ' ');
+	std::copy(str.begin(), str.end(), r.begin());
+	return r;
+}
