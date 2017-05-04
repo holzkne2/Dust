@@ -277,3 +277,4 @@ __pycache__/
 
 # Game Resources
 !**/[Rr]esources/**/*.meta
+!**/[Rr]esources/**/*.obj
