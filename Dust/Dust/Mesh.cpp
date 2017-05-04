@@ -23,6 +23,20 @@ Mesh::~Mesh()
 {
 }
 
+void Mesh::Load()
+{
+	CubeTest();
+
+	_isLoaded = true;
+}
+
+void Mesh::Unload()
+{
+	Shutdown();
+
+	_isLoaded = false;
+}
+
 void Mesh::TriangleTest()
 {
 	_vertices.clear();

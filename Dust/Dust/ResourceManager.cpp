@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Material.h"
 #include "Texture2D.h"
+#include "Mesh.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -101,6 +102,26 @@ void ResourceManager::FindResources(string dirPath)
 			{
 				resource = new Texture2D();
 				resource->SetType(Resource_Texture);
+				resource->SetPath(stows(currPath));
+
+				for (unsigned int l = 0; l < data.size(); ++l)
+				{
+					vector<string> tokens = GetTokens(data[l], ' ');
+					for (unsigned int i = 0; i < tokens.size(); ++i)
+					{
+						if (tokens[i] == "_guid:")
+						{
+							resource->SetResourceID(stoul(tokens[++i]));
+						}
+					}
+				}
+			}
+			//Mesh
+			//Obj
+			else if (ext == ".obj")
+			{
+				resource = new Mesh();
+				resource->SetType(Resource_Mesh);
 				resource->SetPath(stows(currPath));
 
 				for (unsigned int l = 0; l < data.size(); ++l)

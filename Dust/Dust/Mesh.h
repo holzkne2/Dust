@@ -2,38 +2,45 @@
 #include "Object.h"
 #include <d3d11.h>
 #include "MathF.h"
+#include "Resource.h"
 #include <vector>
 
 using namespace MathF;
 
 class Mesh :
-	public Object
+	public Resource
 {
 public:
 	Mesh();
 	virtual ~Mesh();
+
+	virtual void Load();
+	virtual void Unload();
 
 	void SetVertices(const std::vector<Vector3>& vertices) { _vertices = vertices; }
 	const std::vector<Vector3>& GetVertices() { return _vertices; }
 
 	int GetIndexCount() { return _triangles.size(); }
 
+	//TODO: Redo
 	bool Initialize(ID3D11Device*);
-	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
 	void RecalculateNormals();
 	
-	void TriangleTest();
-	void CubeTest();
 
 	bool IsInitizlized() { return _isInitialized; }
 
 private:
+	void Shutdown();
+
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 
+	//TODO: Remove/Relocate
+	void TriangleTest();
+	void CubeTest();
 private:
 	//struct  appdata_base
 	//{
