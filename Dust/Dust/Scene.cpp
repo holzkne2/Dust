@@ -53,21 +53,26 @@ void Scene::SampleScene()
 	//Create Object(s)
 
 	Material* mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(3));
-	Mesh* mesh = static_cast<Mesh*>(ResourceManager::getInstance().GetResource(5));
+	Material* umat = static_cast<Material*>(ResourceManager::getInstance().GetResource(4));
+
+
+	Mesh* cube_mesh = static_cast<Mesh*>(ResourceManager::getInstance().GetResource(5));
+	Mesh* sphere_mesh = static_cast<Mesh*>(ResourceManager::getInstance().GetResource(6));
+	Mesh* cone_mesh = static_cast<Mesh*>(ResourceManager::getInstance().GetResource(7));
 
 	GameObject* simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, -2, -5));
 	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(45, 15, 45)));
 	simpleMesh->AddComponent<MeshRenderer>();
-	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(mesh);
-	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
+	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(cube_mesh);
+	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(umat);
 	AddGameObject(simpleMesh);
 
 	simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 0, -5));
 	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(15, 15, 15)));
 	simpleMesh->AddComponent<MeshRenderer>();
-	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(mesh);
+	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(sphere_mesh);
 	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
 	AddGameObject(simpleMesh);
 
@@ -75,7 +80,7 @@ void Scene::SampleScene()
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 2, -5));
 	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(-45, 15, -45)));
 	simpleMesh->AddComponent<MeshRenderer>();
-	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(mesh);
+	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(cone_mesh);
 	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
 	AddGameObject(simpleMesh);
 }

@@ -1,5 +1,5 @@
 #include "Mesh.h"
-
+#include "Importer.h"
 #include <time.h>
 
 #define _CRTDBG_MAP_ALLOC
@@ -25,7 +25,9 @@ Mesh::~Mesh()
 
 void Mesh::Load()
 {
-	CubeTest();
+	//CubeTest();
+
+	ObjToMesh(_path, this);
 
 	_isLoaded = true;
 }
@@ -37,12 +39,19 @@ void Mesh::Unload()
 	_isLoaded = false;
 }
 
-void Mesh::TriangleTest()
+void Mesh::Clear()
 {
 	_vertices.clear();
 	_colors.clear();
 	_triangles.clear();
 	_uvs.clear();
+	_normals.clear();
+	_tangents.clear();
+}
+
+void Mesh::TriangleTest()
+{
+	Clear();
 
 	//srand(time(NULL));
 	Color color;
@@ -69,10 +78,7 @@ void Mesh::TriangleTest()
 
 void Mesh::CubeTest()
 {
-	_vertices.clear();
-	_colors.clear();
-	_triangles.clear();
-	_uvs.clear();
+	Clear();
 
 	Color color = Color::Yellow;
 	/*color.r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -231,9 +237,12 @@ bool Mesh::Initialize(ID3D11Device* device)
 
 void Mesh::Shutdown()
 {
+	//TODO: Clear?
+
 	// Release the vertex and index buffers.
 	ShutdownBuffers();
 
+	_isInitialized = false;
 	return;
 }
 

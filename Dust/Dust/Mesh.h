@@ -17,8 +17,24 @@ public:
 	virtual void Load();
 	virtual void Unload();
 
+	//TODO: Make Less Mem Intensive
 	void SetVertices(const std::vector<Vector3>& vertices) { _vertices = vertices; }
-	const std::vector<Vector3>& GetVertices() { return _vertices; }
+	std::vector<Vector3>* GetVertices() { return &_vertices; }
+
+	void SetColors(const std::vector<Color>& colors) { _colors = colors; }
+	std::vector<Color>* GetColors() { return &_colors; }
+	
+	void SetTriangles(const std::vector<int>& triangles) { _triangles = triangles; }
+	std::vector<int>* GetTriangles() { return &_triangles; }
+	
+	void SetUVs(const std::vector<Vector2>& uvs) { _uvs = uvs; }
+	std::vector<Vector2>* GetUVs() { return &_uvs; }
+	
+	void SetNormals(const std::vector<Vector3>& normals) { _normals = normals; }
+	std::vector<Vector3>* GetNormals() { return &_normals; }
+
+	void SetTangents(const std::vector<Vector3>& tangents) { _tangents = tangents; }
+	std::vector<Vector3>* GetTangents() { return &_tangents; }
 
 	int GetIndexCount() { return _triangles.size(); }
 
@@ -28,6 +44,7 @@ public:
 
 	void RecalculateNormals();
 	
+	void Clear();
 
 	bool IsInitizlized() { return _isInitialized; }
 
@@ -76,6 +93,7 @@ private:
 
 	ID3D11Buffer *_vertexBuffer, *_indexBuffer;
 
+	//TODO: competes with _isLoaded
 	bool _isInitialized;
 };
 
