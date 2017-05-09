@@ -10,7 +10,6 @@
 
 Resource::Resource()
 {
-	_resourceID = 0;
 	_path = L"";
 	_resourceID = Resource_Null;
 	_isLoaded = false;

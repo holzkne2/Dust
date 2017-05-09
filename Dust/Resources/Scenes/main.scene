@@ -1,0 +1,18 @@
+_ambient: 0.1 0.1 0.1 1
+--- id 1
+GameObject:
+	_transform: 2
+	_components:
+	- component: 3
+--- id 2
+Transform:
+	_position: 0 0 5
+	_rotation: 0 0 0 1
+	_scale: 1 1 1
+	_gameObject: 1
+--- id 3
+Camera:
+	_zFar: 1000
+	_zNear: 0.3
+	_fov: 1.57079632679
+	_gameObject: 1

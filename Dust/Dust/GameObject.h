@@ -13,10 +13,12 @@ public:
 
 	virtual void Update();
 
+	void SetTransform(Transform* transform) { _transform = *transform; _transform.SetGameObject(this); }
 	Transform* GetTransform() { return &_transform; }
 
 	template<typename T> T* GetComponent();
 	template<typename T> T* AddComponent();
+	Component* AddComponent(Component*);
 
 protected:
 	Transform _transform;

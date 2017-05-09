@@ -11,6 +11,11 @@ public:
 	Scene();
 	virtual ~Scene();
 
+	void Save();
+
+	void Load();
+	void Unload();
+
 	void Update();
 
 	void SampleScene();
@@ -23,9 +28,22 @@ public:
 	void AddMeshRenderer(MeshRenderer*);
 	void AddLight(Light*);
 
+	void SetPath(std::wstring path) { _path = path; }
+	std::wstring GetPath() const { return _path; }
+
+	void SetIndex(unsigned long index) { _index = index; }
+	unsigned long GetIndex() { return _index; }
+
+	bool IsLoaded() { return _isLoaded; }
+
 private:
 	std::vector<GameObject*> _gameObjects;
 	std::vector<MeshRenderer*> _meshRenderers;
 	std::vector<Light*> _lights;
+
+	//TODO: Is a scene a resources?
+	wstring _path;
+	unsigned long _index;
+	bool _isLoaded;
 };
 

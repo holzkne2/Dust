@@ -16,6 +16,10 @@ public:
 	Matrix4x4 GetViewport();
 	Matrix4x4 GetViewMatrix();
 
+	void SetFar(float zFar) { _zFar = zFar; }
+	void SetNear(float zNear) { _zNear = zNear; }
+	void SetFov(float fov) { _fov = fov; }
+
 private:
 	float _zFar;
 	float _zNear;

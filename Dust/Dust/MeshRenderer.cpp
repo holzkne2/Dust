@@ -13,5 +13,5 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Awake()
 {
-	System::getInstance().GetScene()->AddMeshRenderer(this);
+	SceneManager::getInstance().GetCurrentScene()->AddMeshRenderer(this);
 }

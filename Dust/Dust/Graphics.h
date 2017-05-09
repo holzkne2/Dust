@@ -22,6 +22,8 @@ public:
 	int GetScreenWidth() { return _screenWidth; }
 	int GetScreenHeight() { return _screenHeight; }
 
+	void SetAmbient(Color color) { _ambient = color; }
+
 	Direct3D* const GetDirect3D() { return _direct3d; }
 
 	HWND* const GetHWND() { return _hwnd; }

@@ -2,6 +2,7 @@
 
 #include "Graphics.h"
 #include "ResourceManager.h"
+#include "SceneManager.h"
 #include "Scene.h"
 
 class System
@@ -16,8 +17,6 @@ public:
 		return instance;
 	}
 
-	Scene* GetScene() { return _scene; }
-
 	void Initialize();
 	void Run();
 	void Shutdown();
@@ -25,5 +24,6 @@ public:
 private:
 	Graphics *_graphics;
 	ResourceManager *_resources;
-	Scene *_scene;
+	SceneManager* _sceneManager;
+	//Scene *_scene;
 };

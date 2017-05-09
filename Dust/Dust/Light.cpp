@@ -15,5 +15,5 @@ Light::~Light()
 
 void Light::Awake()
 {
-	System::getInstance().GetScene()->AddLight(this);
+	SceneManager::getInstance().GetCurrentScene()->AddLight(this);
 }

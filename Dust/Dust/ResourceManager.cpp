@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Texture2D.h"
 #include "Mesh.h"
+#include "SceneManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -136,9 +137,30 @@ void ResourceManager::FindResources(string dirPath)
 					}
 				}
 			}
+			//Scene
+			else if (ext == ".scene")
+			{
+				Scene* scene = new Scene();
+				scene->SetPath(stows(currPath));
+
+				for (unsigned int l = 0; l < data.size(); ++l)
+				{
+					vector<string> tokens = GetTokens(data[l], ' ');
+					for (unsigned int i = 0; i < tokens.size(); ++i)
+					{
+						if (tokens[i] == "_index:")
+						{
+							scene->SetIndex(stoul(tokens[++i]));
+						}
+					}
+				}
+
+				SceneManager::getInstance().AddScene(scene->GetIndex(), scene);
+			}
 
 			if (resource)
 				_resources.insert(pair<unsigned long, Resource*>(resource->GetResourceID(), resource));
+			resource = 0;
 		}
 	}
 }

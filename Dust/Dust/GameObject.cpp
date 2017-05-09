@@ -10,6 +10,7 @@
 
 GameObject::GameObject()
 {
+	_transform.SetGameObject(this);
 }
 
 
@@ -30,4 +31,11 @@ void GameObject::Update()
 		if (_components[i])
 			_components[i]->Update();
 	}
+}
+
+Component* GameObject::AddComponent(Component* component)
+{
+	_components.push_back(component);
+	component->SetGameObject(this);
+	return component;
 }

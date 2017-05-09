@@ -64,9 +64,10 @@ void Graphics::Render()
 {
 	Matrix4x4 viewMatrix, projectionMatrix, worldMatrix;
 	Camera* camera = 0;
-	const std::vector<GameObject*>* gameObjects = System::getInstance().GetScene()->GetGameObjects();
-	const std::vector<MeshRenderer*>* meshRenderers = System::getInstance().GetScene()->GetMeshRenderers();
-	const std::vector<Light*>* lights = System::getInstance().GetScene()->GetLights();
+	Scene* scene = SceneManager::getInstance().GetCurrentScene();
+	const std::vector<GameObject*>* gameObjects = scene->GetGameObjects();
+	const std::vector<MeshRenderer*>* meshRenderers = scene->GetMeshRenderers();
+	const std::vector<Light*>* lights = scene->GetLights();
 	MeshRenderer* meshRendererPointer = 0;
 	Light* lightPointer = 0;
 	

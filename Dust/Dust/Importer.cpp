@@ -39,17 +39,17 @@ void ObjToMesh(std::wstring path, Mesh* const &mesh)
 		if (tokens[t] == "v")
 		{
 			v.push_back(Vector3(stof(tokens[1+t]), stof(tokens[2+t]), 0 - stof(tokens[3+t])));
-			t += 3;
+			t += 4;
 		}
 		else if (tokens[t] == "vt")
 		{
 			vt.push_back(Vector2(stof(tokens[1+t]), 1 - stof(tokens[2+t])));
-			t += 2;
+			t += 3;
 		}
 		else if (tokens[t] == "vn")
 		{
 			vn.push_back(Vector3(stof(tokens[1+t]), stof(tokens[2+t]), 0 - stof(tokens[3+t])));
-			t += 3;
+			t += 4;
 		}
 		else if (tokens[t] == "f")
 		{

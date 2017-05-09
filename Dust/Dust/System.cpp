@@ -14,7 +14,6 @@ System::System()
 {
 	_graphics = 0;
 	_resources = 0;
-	_scene = 0;
 }
 
 System::~System()
@@ -29,15 +28,17 @@ void System::Initialize()
 
 	_graphics = &Graphics::getInstance();
 
+	_sceneManager = &SceneManager::getInstance();
 	_resources = &ResourceManager::getInstance();
 }
 
 void System::Run()
 {
-	_scene = new Scene();
-	
+	_sceneManager->SetCurrentScene(0);
+
 	//TESTCODE
-	_scene->SampleScene();
+	//_sceneManager->GetCurrentScene()->SampleScene();
+	//_sceneManager->GetCurrentScene()->Save();
 
 	SDL_Event evt;
 	bool programrunning = true;
@@ -56,7 +57,7 @@ void System::Run()
 		//Time
 
 		//Update GameObjects
-		_scene->Update();
+		_sceneManager->GetCurrentScene()->Update();
 
 		//Physics
 
@@ -67,8 +68,8 @@ void System::Run()
 
 void System::Shutdown()
 {
-	if (_scene)
-		delete _scene;
+	if (_sceneManager)
+		_sceneManager->ShutDown();
 	if (_resources)
 		_resources->ShutDown();
 	if (_graphics)
