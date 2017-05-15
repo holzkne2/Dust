@@ -17,6 +17,9 @@ public:
 	void SetGameObject(GameObject* gameObject) { _gameObject = gameObject; }
 	GameObject* GetGameObject() { return _gameObject; }
 
+	virtual void serialize(std::ostream& stream) {}
+	virtual void deserialize(std::istream& stream) {}
+
 protected:
 	GameObject* _gameObject;
 };

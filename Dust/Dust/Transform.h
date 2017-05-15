@@ -28,6 +28,24 @@ public:
 
 	Vector3 GetForward();
 
+	virtual void serialize(std::ostream& stream) {
+		stream << "Transform ";
+		stream << "Position " << _position << "Rotation " << _rotation << "Scale " << _scale;
+	}
+	virtual void deserialize(std::istream& stream) {
+		_dirty = true;
+		string word;
+		stream >> word;
+		if (word == "Position")
+			stream >> _position;
+		stream >> word;
+		if (word == "Rotation")
+			stream >> _rotation;
+		stream >> word;
+		if (word == "Scale") 
+			stream >> _scale;
+	}
+
 private:
 	Vector3 _position;
 	Quaternion _rotation;

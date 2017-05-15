@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <algorithm>
+#include <iostream>
 
 #define PI 3.14159265
 
@@ -44,6 +45,10 @@ namespace MathF
 		Vector2& operator-= (const Vector2& v);
 		Vector2& operator*= (float s);
 		Vector2& operator/= (float s);
+
+		// Stream operators
+		friend std::ostream& operator<<(std::ostream& os, const Vector2& v);
+		friend std::istream& operator>>(std::istream& is, Vector2& v);
 
 		//static variables
 		static const Vector2 Down;
@@ -100,6 +105,10 @@ namespace MathF
 		Vector3& operator*= (float s);
 		Vector3& operator/= (float s);
 
+		// Stream operators
+		friend std::ostream& operator<<(std::ostream& os, const Vector3& v);
+		friend std::istream& operator>>(std::istream& is, Vector3& v);
+
 		//static variables
 		static const Vector3 Back;
 		static const Vector3 Down;
@@ -151,6 +160,10 @@ namespace MathF
 		Quaternion& operator*= (const Quaternion& q);
 		Quaternion& operator*= (float s);
 		Quaternion& operator/= (const Quaternion& q);
+
+		// Stream operators
+		friend std::ostream& operator<<(std::ostream& os, const Quaternion& q);
+		friend std::istream& operator>>(std::istream& is, Quaternion& q);
 
 		//constants
 		static const Quaternion Identity;
@@ -255,6 +268,10 @@ namespace MathF
 		Color& operator*= (const Color& c);
 		Color& operator*= (float s);
 		Color& operator/= (const Color& c);
+
+		// Stream operators
+		friend std::ostream& operator<<(std::ostream& os, const Color& c);
+		friend std::istream& operator>>(std::istream& is, Color& c);
 
 		//constants
 		static const Color Black;

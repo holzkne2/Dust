@@ -4,8 +4,7 @@
 #include "Graphics.h"
 
 #include <fstream>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
+#include <iostream>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -14,6 +13,8 @@
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_NEW
 #endif
+
+using namespace std;
 
 Scene::Scene()
 {
@@ -27,26 +28,65 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	for (unsigned int i = 0; i < _gameObjects.size(); i++)
-	{
-		delete _gameObjects[i];
-	}
-	_gameObjects.clear();
-
-	_meshRenderers.clear();
-
-	_lights.clear();
+	Unload();
 }
 
 void Scene::Save()
 {
+	std::filebuf file;
+	file.open("TestScene", ios::out);
+	ostream os(&file);
+	
+	os << "Ambient ";
+	os << Graphics::getInstance().GetAmbient();
+	
+	os << "GameObjects ";
+	//os << "GameObject ";
+	//_gameObjects[_gameObjects.size() - 1]->serialize(os);
+	for (unsigned int i = 0; i < _gameObjects.size(); i++)
+	{
+		_gameObjects[i]->serialize(os);
+	}
+	os << "GameObjectsEND ";
+	
+	file.close();
 }
 
 void Scene::Load()
 {
+	string word;
 	//_isLoaded = true;
 	//return;
 
+	std::filebuf file;
+	file.open("TestScene", ios::in);
+	istream is(&file);
+	
+	//Ambient
+	is >> word;
+	Color ambient;
+	is >> ambient;
+	Graphics::getInstance().SetAmbient(ambient);
+	
+	//GAMEOBJECTS word
+	is >> word;
+	while (is >> word)
+	{
+		if (word == "GameObject")
+		{
+			GameObject* gameObject = new GameObject();
+			gameObject->deserialize(is);
+			AddGameObject(gameObject);
+		}
+		else if (word == "GameObjectsEND")
+			break;
+	}
+
+	file.close();
+	_isLoaded = true;
+	return;
+
+	/*
 	map<int, Object*> objects = map<int, Object*>();
 	//TODO: Remove
 	map<int, int> id_token = map<int, int>();
@@ -108,7 +148,7 @@ void Scene::Load()
 				while (i < tokens.size() && tokens[i].at(0) == '\t')
 				{
 					// Linking Auto Done Below
-					/*
+					
 					if (tokens[i] == "\t_transform:")
 					{
 						gameObject->SetTransform(static_cast<Transform*>(objects.find(stoi(tokens[1+i]))->second));
@@ -124,7 +164,7 @@ void Scene::Load()
 					}
 					else
 						++i;
-					*/
+					
 					++i;
 				}
 			}
@@ -196,12 +236,21 @@ void Scene::Load()
 			++i;
 	}
 
-	_isLoaded = true;
+	_isLoaded = true;*/
 }
 
 void Scene::Unload()
 {
-	//TODO: Unload resources
+	for (unsigned int i = 0; i < _gameObjects.size(); i++)
+	{
+		delete _gameObjects[i];
+	}
+	_gameObjects.clear();
+
+	_meshRenderers.clear();
+
+	_lights.clear();
+
 	_isLoaded = false;
 }
 
@@ -254,7 +303,7 @@ void Scene::SampleScene()
 
 	simpleMesh = new GameObject();
 	simpleMesh->GetTransform()->SetPosition(Vector3(0, 2, -5));
-	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(0, 0, 0)));
+	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(15, 7, 23)));
 	simpleMesh->AddComponent<MeshRenderer>();
 	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(cone_mesh);
 	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(umat);

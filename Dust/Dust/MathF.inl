@@ -126,6 +126,18 @@ inline Vector2 operator* (float s, const Vector2& v)
 	return Vector2(v.x * s, v.y * s);
 }
 
+inline std::ostream& operator<<(std::ostream& os, const Vector2& v)
+{
+	os << v.x << " " << v.y << " ";
+	return os;
+}
+
+inline std::istream& operator>>(std::istream& is, Vector2& v)
+{
+	is >> v.x >> v.y;
+	return is;
+}
+
 // Vector3
 
 inline float Vector3::Magnitude() const
@@ -278,6 +290,18 @@ inline Vector3 operator* (const Quaternion& q, const Vector3& v)
 	r.y = (xy2 + wz2) * v.x + (1.0 - (xx2 + zz2)) * v.y + (yz2 - wx2) * v.z;
 	r.z = (xz2 - wy2) * v.x + (yz2 + wx2) * v.y + (1.0 - (xx2 + yy2)) * v.z;
 	return r;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Vector3& v)
+{
+	os << v.x << " " << v.y << " " << v.z << " ";
+	return os;
+}
+
+inline std::istream& operator>>(std::istream& is, Vector3& v)
+{
+	is >> v.x >> v.y >> v.z;
+	return is;
 }
 
 // Quaternion
@@ -518,6 +542,18 @@ inline Quaternion operator/ (const Quaternion& a, const Quaternion& b)
 		-a.x * inverse.z + a.y*inverse.w + a.z*inverse.x + a.w*inverse.y,
 		+a.x * inverse.y - a.y*inverse.x + a.z*inverse.w + a.w*inverse.z,
 		-a.x * inverse.x - a.y*inverse.y - a.z*inverse.z + a.w*inverse.w);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Quaternion& q)
+{
+	os << q.x << " " << q.y << " " << q.z << " " << q.w << " ";
+	return os;
+}
+
+inline std::istream& operator>>(std::istream& is, Quaternion& q)
+{
+	is >> q.x >> q.y >> q.z >> q.w;
+	return is;
 }
 
 // Matrix4x4
@@ -875,4 +911,16 @@ inline Color operator/ (const Color& a, const Color& b)
 inline Color operator* (float s, const Color& c)
 {
 	return Color(c.r * s, c.g * s, c.b * s, c.a * s);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Color& c)
+{
+	os << c.r << " " << c.g << " " << c.b << " " << c.a << " ";
+	return os;
+}
+
+inline std::istream& operator>>(std::istream& is, Color& c)
+{
+	is >> c.r >> c.g >> c.b >> c.a;
+	return is;
 }

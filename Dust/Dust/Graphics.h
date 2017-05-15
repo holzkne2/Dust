@@ -23,6 +23,7 @@ public:
 	int GetScreenHeight() { return _screenHeight; }
 
 	void SetAmbient(Color color) { _ambient = color; }
+	Color GetAmbient() { return _ambient; }
 
 	Direct3D* const GetDirect3D() { return _direct3d; }
 

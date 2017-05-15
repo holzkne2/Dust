@@ -37,5 +37,6 @@ Component* GameObject::AddComponent(Component* component)
 {
 	_components.push_back(component);
 	component->SetGameObject(this);
+	component->Awake();
 	return component;
 }
