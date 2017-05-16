@@ -34,7 +34,7 @@ Scene::~Scene()
 void Scene::Save()
 {
 	std::filebuf file;
-	file.open("TestScene", ios::out);
+	file.open(_path, ios::out);
 	ostream os(&file);
 	
 	os << "Ambient ";
@@ -59,7 +59,7 @@ void Scene::Load()
 	//return;
 
 	std::filebuf file;
-	file.open("TestScene", ios::in);
+	file.open(_path, ios::in);
 	istream is(&file);
 	
 	//Ambient

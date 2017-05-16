@@ -1,18 +1,1 @@
-_ambient: 0.1 0.1 0.1 1
---- id 1
-GameObject:
-	_transform: 2
-	_components:
-	- component: 3
---- id 2
-Transform:
-	_position: 0 0 5
-	_rotation: 0 0 0 1
-	_scale: 1 1 1
-	_gameObject: 1
---- id 3
-Camera:
-	_zFar: 1000
-	_zNear: 0.3
-	_fov: 1.57079632679
-	_gameObject: 1
+Ambient 0.1 0.1 0.1 1 GameObjects GameObject Transform Position 0 0 0 Rotation 0 0 0 1 Scale 1 1 1 Components Camera ZFar 1000 ZNear 0.1 FOV 1.5708 ComponentsEND GameObject Transform Position 0 0 0 Rotation 0 0 0 1 Scale 1 1 1 Components Light Color 1 1 1 1 Intensity 1 ComponentsEND GameObject Transform Position 0 -5 -10 Rotation 0 0 0 1 Scale 1 1 1 Components MeshRenderer Mesh 9 Material 3 ComponentsEND GameObject Transform Position 0 0 -5 Rotation 0 0 0 1 Scale 1 1 1 Components MeshRenderer Mesh 6 Material 3 ComponentsEND GameObject Transform Position 0 2 -5 Rotation 0.1156 0.0852854 0.189485 0.971318 Scale 1 1 1 Components MeshRenderer Mesh 7 Material 4 ComponentsEND GameObjectsEND 
