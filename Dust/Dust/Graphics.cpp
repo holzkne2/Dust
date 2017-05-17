@@ -23,8 +23,8 @@ Graphics::Graphics()
 	_window = 0;
 	_direct3d = 0;
 
-	_screenWidth = 800;
-	_screenHeight = 600;
+	_screenWidth = 1280;
+	_screenHeight = 720;
 
 	_fullscreen = false;
 
@@ -57,7 +57,7 @@ void Graphics::Awake()
 
 	//Setup Direct3D
 	_direct3d = new Direct3D();
-	_direct3d->Initialize(_screenHeight, _screenHeight, false, *_hwnd, _fullscreen, 0.1, 1000);
+	_direct3d->Initialize(_screenHeight, _screenHeight, true, *_hwnd, _fullscreen, 0.1, 1000);
 }
 
 void Graphics::Render()
@@ -72,7 +72,7 @@ void Graphics::Render()
 	Light* lightPointer = 0;
 	
 	//Clear Buffer
-	_direct3d->BeginScene(0.1, 0.1, 0.1);
+	_direct3d->BeginScene(_ambient.r, _ambient.g, _ambient.b);
 
 	//Find Camera
 	for (unsigned int i = 0; i < gameObjects->size(); ++i)
