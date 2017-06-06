@@ -44,7 +44,7 @@ void Graphics::Awake()
 	if (_fullscreen)
 		SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	if (_window == nullptr){
-		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+		Debug::Error(SDL_GetError());
 		SDL_Quit();
 	}
 
@@ -103,7 +103,7 @@ void Graphics::Render()
 
 				if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
 					if (!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
-						std::cout << "Mesh Initialize Failed" << std::endl;
+						Debug::Error("Mesh Initialize Failed");
 				meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
 
 				meshRendererPointer->GetSharedMaterial()->Render(_direct3d->GetDeviceContext(),

@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "Debug.h"
 
 class System
 {
@@ -22,6 +23,7 @@ public:
 	void Shutdown();
 
 private:
+	Debug* _debug;
 	Graphics *_graphics;
 	ResourceManager *_resources;
 	SceneManager* _sceneManager;

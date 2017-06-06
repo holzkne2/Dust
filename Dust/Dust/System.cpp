@@ -12,7 +12,9 @@
 
 System::System()
 {
+	_debug = 0;
 	_graphics = 0;
+	_sceneManager = 0;
 	_resources = 0;
 }
 
@@ -22,8 +24,13 @@ System::~System()
 
 void System::Initialize()
 {
+	_debug = &Debug::getInstance();
+	Debug::Message("EXAMPLE MESSAGE");
+	Debug::Warning("EXAMPLE WARNING");
+	Debug::Error("EXAMPLE ERROR");
+
 	if (SDL_Init(SDL_INIT_VIDEO) != 0){
-		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+		Debug::Error(SDL_GetError());
 	}
 
 	_graphics = &Graphics::getInstance();

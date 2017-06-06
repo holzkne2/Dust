@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include <iostream>
 #include "GameObject.h"
+#include "Debug.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -148,13 +149,13 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 		// If the shader failed to compile it should have writen something to the error message.
 		if (errorMessage)
 		{
-			std::cout << "Failed To Compile Vertex Shader: " << _shaderfilename << std::endl;
+			Debug::Error("Failed To Compile Vertex Shader: " + wstos(_shaderfilename));
 			OutputShaderErrorMessage(errorMessage, hwnd);
 		}
 		// If there was nothing in the error message then it simply could not find the shader file itself.
 		else
 		{
-			std::cout << "Failed To Find Shader: " << _shaderfilename << std::endl;
+			Debug::Error("Failed To Find Shader: " + wstos(_shaderfilename));
 			MessageBox(hwnd, _shaderfilename.c_str(), L"Missing Shader File", MB_OK);
 		}
 
@@ -169,13 +170,13 @@ bool Material::InitializeShader(ID3D11Device* device, HWND hwnd)
 		// If the shader failed to compile it should have writen something to the error message.
 		if (errorMessage)
 		{
-			std::cout << "Failed To Compile Pixel Shader: " << _shaderfilename << std::endl;
+			Debug::Error("Failed To Compile Pixel Shader: " + wstos(_shaderfilename));
 			OutputShaderErrorMessage(errorMessage, hwnd);
 		}
 		// If there was  nothing in the error message then it simply could not find the file itself.
 		else
 		{
-			std::cout << "Failed To Find Shader: " << _shaderfilename << std::endl;
+			Debug::Error("Failed To Find Shader: " + wstos(_shaderfilename));
 			MessageBox(hwnd, _shaderfilename.c_str(), L"Missing Shader File", MB_OK);
 		}
 

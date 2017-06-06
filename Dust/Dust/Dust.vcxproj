@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="FileHelperDust.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -104,6 +105,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="FileHelperDust.h" />
     <ClInclude Include="GameObject.h" />

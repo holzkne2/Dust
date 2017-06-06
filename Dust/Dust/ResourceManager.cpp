@@ -6,6 +6,7 @@
 #include "Texture2D.h"
 #include "Mesh.h"
 #include "SceneManager.h"
+#include "Debug.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -35,7 +36,7 @@ void ResourceManager::Awake()
 
 	if (!exists(root_path))
 	{
-		cout << "Resource Folder does not exist!" << endl;
+		Debug::Warning("Resource Folder does not exist!");
 		return;
 	}
 
@@ -55,7 +56,7 @@ void ResourceManager::ShutDown()
 
 void ResourceManager::FindResources(string dirPath)
 {
-	cout << "Folder Found: " + dirPath << endl;
+	Debug::Message("Folder Found: " + dirPath);
 	directory_iterator endItr;
 	string currPath;
 	for (directory_iterator itr(dirPath); itr != endItr; ++itr)
@@ -65,12 +66,12 @@ void ResourceManager::FindResources(string dirPath)
 			FindResources(currPath);
 		else if (currPath.substr(currPath.length() - 5) != ".meta")
 		{
-			cout << "Resource Found: " + currPath << endl;
+			Debug::Message("Resource Found: " + currPath);
 			//Get File Data
 			string metaPath = currPath + ".meta";
 			if (!exists(metaPath))
 			{
-				cout << "Meta Missing: " + currPath << endl;
+				Debug::Warning("Meta Missing: " + currPath);
 				continue;
 			}
 

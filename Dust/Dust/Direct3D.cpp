@@ -2,6 +2,7 @@
 #include <D3DX11.h>
 #include <SDL.h>
 #include <iostream>
+#include "Debug.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -93,7 +94,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create IDXGIFactory" << std::endl;
+		Debug::Error("Failed to create IDXGIFactory");
 		return;
 	}
 
@@ -102,7 +103,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = factory->EnumAdapters(0, &adapter);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create adapter" << std::endl;
+		Debug::Error("Failed to create adapter");
 		return;
 	}
 
@@ -111,7 +112,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = adapter->EnumOutputs(0, &adapterOutput);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to enumerate the primary adapter output" << std::endl;
+		Debug::Error("Failed to enumerate the primary adapter output");
 		return;
 	}
 
@@ -120,7 +121,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output" << std::endl;
+		Debug::Error("Failed to get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output") ;
 		return;
 	}
 
@@ -129,7 +130,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	displayModeList = new DXGI_MODE_DESC[numModes];
 	if (!displayModeList)
 	{
-		std::cout << "Failed to create a list to hold all the possible display modes for this monitor/video card combination" << std::endl;
+		Debug::Error("Failed to create a list to hold all the possible display modes for this monitor/video card combination");
 		return;
 	}
 
@@ -137,7 +138,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to fill the display mode list structures" << std::endl;
+		Debug::Error("Failed to fill the display mode list structures");
 		return;
 	}
 
@@ -161,13 +162,13 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = adapter->GetDesc(&adapterDesc);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to get the adapter (video card) description" << std::endl;
+		Debug::Error("Failed to get the adapter (video card) description");
 		return;
 	}
 
 	// Store the dedicated video card memory in megabytes.
 	_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
-	std::cout << "Video Memory: " << _videoCardMemory << "MB" << std::endl;
+	Debug::Message("Video Memory: " + std::to_string(_videoCardMemory) + "MB");
 
 	// Convert the name of the video card to a character array and store it.
 	int error;
@@ -175,10 +176,10 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	error = wcstombs_s(&stringLength, _videoCardDescription, 128, adapterDesc.Description, 128);
 	if (error != 0)
 	{
-		std::cout << "Failed to convert the name of the video card to a character array and store it" << std::endl;
+		Debug::Error("Failed to convert the name of the video card to a character array and store it");
 		return;
 	}
-	std::cout << _videoCardDescription << std::endl;
+	Debug::Message(_videoCardDescription);
 
 	// Release the display mode list.
 	delete[] displayModeList;
@@ -261,7 +262,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		D3D11_SDK_VERSION, &swapChainDesc, &_swapChain, &_device, NULL, &_deviceContext);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the swap chain, Direct3D device, and Direct3D device context" << std::endl;
+		Debug::Error("Failed to create the swap chain, Direct3D device, and Direct3D device context");
 		return;
 	}
 
@@ -270,7 +271,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to get the pointer to the back buffer" << std::endl;
+		Debug::Error("Failed to get the pointer to the back buffer");
 		return;
 	}
 
@@ -278,7 +279,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _device->CreateRenderTargetView(backBufferPtr, NULL, &_renderTargetView);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the render target view with the back buffer pointer" << std::endl;
+		Debug::Error("Failed to create the render target view with the back buffer pointer");
 		return;
 	}
 
@@ -307,7 +308,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _device->CreateTexture2D(&depthBufferDesc, NULL, &_depthStencilBuffer);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the texture for the depth buffer using the filled out description" << std::endl;
+		Debug::Error("Failed to create the texture for the depth buffer using the filled out description");
 		return;
 	}
 
@@ -340,7 +341,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _device->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the depth stencil state" << std::endl;
+		Debug::Error("Failed to create the depth stencil state");
 		return;
 	}
 
@@ -360,7 +361,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _device->CreateDepthStencilView(_depthStencilBuffer, &depthStencilViewDesc, &_depthStencilView);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the depth stencil view" << std::endl;
+		Debug::Error("Failed to create the depth stencil view");
 		return;
 	}
 
@@ -384,7 +385,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	result = _device->CreateRasterizerState(&rasterDesc, &_rasterState);
 	if (FAILED(result))
 	{
-		std::cout << "Failed to create the rasterizer state from the description we just filled out" << std::endl;
+		Debug::Error("Failed to create the rasterizer state from the description we just filled out");
 		return;
 	}
 
@@ -418,7 +419,7 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//// Create an orthographic projection matrix for 2D rendering.
 	//_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
-	std::cout << "Direct3D Init" << std::endl;
+	Debug::Message("Direct3D Init");
 
 	BeginScene(0, 0, 0);
 	EndScene();

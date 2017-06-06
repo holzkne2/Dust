@@ -2,6 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include "Debug.h"
 
 vector<string> GetTokens(string str, char delimiter)
 {
@@ -30,7 +31,7 @@ vector<string> ReadFile(string path)
 		return r;
 	}
 
-	cout << "Cannot Open: " << path << endl;
+	Debug::Warning("Cannot Open: " + path);
 	
 	return r;
 }
