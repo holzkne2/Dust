@@ -54,6 +54,7 @@ void Scene::Save()
 
 void Scene::Load()
 {
+	Debug::Message("Scene " + wstos(_path) + " is loading");
 	string word;
 	//_isLoaded = true;
 	//return;
@@ -84,6 +85,7 @@ void Scene::Load()
 
 	file.close();
 	_isLoaded = true;
+	Debug::Message("Scene " + wstos(_path) + " is loaded");
 	return;
 
 	/*
@@ -252,6 +254,7 @@ void Scene::Unload()
 	_lights.clear();
 
 	_isLoaded = false;
+	Debug::Message("Scene " + wstos(_path) + " is unloaded");
 }
 
 void Scene::Update()

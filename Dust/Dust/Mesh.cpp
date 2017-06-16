@@ -26,10 +26,11 @@ Mesh::~Mesh()
 void Mesh::Load()
 {
 	//CubeTest();
-
+	Debug::Message("Mesh " + wstos(_path) + " is loading");
 	ObjToMesh(_path, this);
 
 	_isLoaded = true;
+	Debug::Message("Mesh " + wstos(_path) + " is loaded");
 }
 
 void Mesh::Unload()
@@ -37,6 +38,7 @@ void Mesh::Unload()
 	Shutdown();
 
 	_isLoaded = false;
+	Debug::Message("Mesh " + wstos(_path) + " is unloaded");
 }
 
 void Mesh::Clear()
@@ -223,12 +225,12 @@ void Mesh::RecalculateNormals()
 	delete [] normal_buffer;
 }
 
-bool Mesh::Initialize(ID3D11Device* device)
+bool Mesh::InitializeStatic(ID3D11Device* device)
 {
 	bool result;
 
 	// Initialize the vertex and index buffer that hold the geometry for the triangle.
-	result = InitializeBuffers(device);
+	result = InitializeStaticBuffers(device);
 	if (!result)
 		return false;
 
@@ -255,7 +257,7 @@ void Mesh::Render(ID3D11DeviceContext* deviceContext)
 }
 
 //TODO: Adapt to vertex size
-bool Mesh::InitializeBuffers(ID3D11Device* device)
+bool Mesh::InitializeStaticBuffers(ID3D11Device* device)
 {
 	VertexType* Full_vertices = new VertexType[_vertices.size()];
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -345,6 +347,149 @@ void Mesh::ShutdownBuffers()
 	}
 
 	return;
+}
+
+bool Mesh::InitializeDynamic(ID3D11Device* device)
+{
+	bool result;
+
+	// Initialize the vertex and index buffers.
+	result = InitializeDynamicBuffers(device);
+	if (!result)
+	{
+		return false;
+	}
+
+	return _isInitialized = true;
+}
+
+bool Mesh::InitializeDynamicBuffers(ID3D11Device* device)
+{
+	VertexType* Full_vertices = new VertexType[_vertices.size()];
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	HRESULT result;
+
+	for (int i = 0; i < _vertices.size(); i++)
+	{
+		Full_vertices[i].position = _vertices[i];
+
+		if (_colors.size() <= i)
+			Full_vertices[i].color = Color();
+		else
+			Full_vertices[i].color = _colors[i];
+
+		if (_uvs.size() <= i)
+			Full_vertices[i].uv = Vector2();
+		else
+			Full_vertices[i].uv = _uvs[i];
+
+		if (_normals.size() <= i)
+			Full_vertices[i].normal = Vector3();
+		else
+			Full_vertices[i].normal = _normals[i];
+
+		if (_tangents.size() <= i)
+			Full_vertices[i].tangent = Vector3();
+		else
+			Full_vertices[i].tangent = _tangents[i];
+	}
+
+	// Set up the description of the static vertex buffer.
+	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertices.size();
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the vertex data.
+	vertexData.pSysMem = Full_vertices;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	// Now create the vertex buffer.
+	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+	if (FAILED(result))
+		return false;
+
+	// Set up the description of the static index buffer.
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * _triangles.size();
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the index data.
+	indexData.pSysMem = &_triangles[0];
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	// Create the index buffer.
+	result = device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+	if (FAILED(result))
+		return false;
+
+	delete[] Full_vertices;
+
+	return true;
+}
+
+//WARNING: Does not edit triangles
+bool Mesh::UpdateDynamicBuffers(ID3D11DeviceContext* deviceContext)
+{
+	VertexType* Full_vertices = new VertexType[_vertices.size()];
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexType* verticesPtr;
+	HRESULT result;
+
+	for (int i = 0; i < _vertices.size(); i++)
+	{
+		Full_vertices[i].position = _vertices[i];
+
+		if (_colors.size() <= i)
+			Full_vertices[i].color = Color();
+		else
+			Full_vertices[i].color = _colors[i];
+
+		if (_uvs.size() <= i)
+			Full_vertices[i].uv = Vector2();
+		else
+			Full_vertices[i].uv = _uvs[i];
+
+		if (_normals.size() <= i)
+			Full_vertices[i].normal = Vector3();
+		else
+			Full_vertices[i].normal = _normals[i];
+
+		if (_tangents.size() <= i)
+			Full_vertices[i].tangent = Vector3();
+		else
+			Full_vertices[i].tangent = _tangents[i];
+	}
+
+	// Lock the vertex buffer so it can be written to.
+	result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the vertex buffer.
+	verticesPtr = (VertexType*)mappedResource.pData;
+
+	// Copy the data into the vertex buffer.
+	memcpy(verticesPtr, (void*)Full_vertices, (sizeof(VertexType) * _vertices.size()));
+
+	// Unlock the vertex buffer.
+	deviceContext->Unmap(_vertexBuffer, 0);
+
+	// Release the vertex array as it is no longer needed.
+	delete[] Full_vertices;
+
+
+	return true;
 }
 
 void Mesh::RenderBuffers(ID3D11DeviceContext* deviceContext)

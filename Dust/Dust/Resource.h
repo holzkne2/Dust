@@ -1,6 +1,8 @@
 #pragma once
 #include "Object.h"
 #include <string>
+#include "Debug.h"
+#include "FileHelperDust.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>

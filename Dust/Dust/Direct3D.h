@@ -25,6 +25,9 @@ public:
 	ID3D11Device* GetDevice() { return _device; }
 	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext; }
 
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+
 private:
 	bool _vsync_enabled;
 	int _videoCardMemory;
@@ -37,5 +40,6 @@ private:
 	ID3D11DepthStencilState* _depthStencilState;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11RasterizerState* _rasterState;
+	ID3D11DepthStencilState* _depthDisabledStencilState;
 };
 

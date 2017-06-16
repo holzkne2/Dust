@@ -214,6 +214,7 @@ namespace MathF
 		static Matrix4x4 Frustum(float xmin, float xmax, float ymin, float ymax, float zNear, float zFar);
 		static Matrix4x4 Inverse(const Matrix4x4& m);
 		static Matrix4x4 Perspective(float fov, float aspect, float zNear, float zFar);
+		static Matrix4x4 Orthographic(float width, float height, float zNear, float zFar);
 		static Matrix4x4 Rotation(const Quaternion& q);
 		static Matrix4x4 Scale(const Vector3& s);
 		static Matrix4x4 Scale(float s);

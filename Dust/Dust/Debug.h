@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Object.h"
 
 class Debug
 {
@@ -16,5 +17,10 @@ public:
 	static void Message(std::string msg);
 	static void Warning(std::string msg);
 	static void Error(std::string msg);
+
+	void CreateDebugUI();
+
+private:
+	Object* _sampleUIImage;
 };
 

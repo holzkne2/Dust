@@ -38,9 +38,13 @@ public:
 
 	int GetIndexCount() { return _triangles.size(); }
 
-	//TODO: Redo
-	bool Initialize(ID3D11Device*);
+	//TODO: remove
+	//bool Initialize(ID3D11Device*);
+
+	bool InitializeStatic(ID3D11Device*);
+	bool InitializeDynamic(ID3D11Device*);
 	void Render(ID3D11DeviceContext*);
+	bool UpdateDynamicBuffers(ID3D11DeviceContext*);
 
 	void RecalculateNormals();
 	
@@ -51,7 +55,9 @@ public:
 private:
 	void Shutdown();
 
-	bool InitializeBuffers(ID3D11Device*);
+	//bool InitializeBuffers(ID3D11Device*);
+	bool InitializeStaticBuffers(ID3D11Device*);
+	bool InitializeDynamicBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 

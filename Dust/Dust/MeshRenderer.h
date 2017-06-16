@@ -3,10 +3,12 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "ResourceManager.h"
+#include "Renderer.h"
 
+//TODO: derive from renderer
 //TODO: Render Function
 class MeshRenderer :
-	public Component
+	public Renderer
 {
 public:
 	MeshRenderer();
@@ -14,12 +16,9 @@ public:
 
 	virtual void Awake();
 
-	void SetSharedMesh(Mesh* mesh) { _mesh = mesh; }
-	Mesh* GetSharedMesh() { return _mesh; }
+	virtual bool Render(ID3D11DeviceContext*, ID3D11Device*, Matrix4x4, Matrix4x4, Matrix4x4, Light*, Color);
 
-	void SetMaterial(Material* material) { _material = material; }
-	Material* GetSharedMaterial() { return _material; }
-
+	//TODO:Fix
 	virtual void serialize(std::ostream& stream) {
 		stream << "MeshRenderer ";
 		stream << "Mesh " << _mesh->GetResourceID() << " Material " << _material->GetResourceID() << " ";
@@ -40,9 +39,5 @@ public:
 			_material = static_cast<Material*>(ResourceManager::getInstance().GetResource(id));
 		}
 	}
-
-private:
-	Mesh* _mesh;
-	Material* _material;
 };
 

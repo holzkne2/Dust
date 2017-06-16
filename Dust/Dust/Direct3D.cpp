@@ -22,6 +22,7 @@ Direct3D::Direct3D()
 	_depthStencilState = 0;
 	_depthStencilView = 0;
 	_rasterState = 0;
+	_depthDisabledStencilState = 0;
 }
 
 
@@ -79,6 +80,12 @@ Direct3D::~Direct3D()
 	{
 		_swapChain->Release();
 		_swapChain = 0;
+	}
+
+	if (_depthDisabledStencilState)
+	{
+		_depthDisabledStencilState->Release();
+		_depthDisabledStencilState = 0;
 	}
 }
 
@@ -392,6 +399,8 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Now set the rasterizer state.
 	_deviceContext->RSSetState(_rasterState);
 
+	//TODO: Used?
+
 	// Setup the viewport for rendering.
 	D3D11_VIEWPORT viewport;
 	viewport.Width = (float)screenWidth;
@@ -419,10 +428,54 @@ void Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//// Create an orthographic projection matrix for 2D rendering.
 	//_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
+
+	// Create Depth Disable Stencil
+	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+	// Clear the second depth stencil state before setting the parameters.
+	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
+
+	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
+	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
+	depthDisabledStencilDesc.DepthEnable = false;
+	depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDisabledStencilDesc.StencilEnable = true;
+	depthDisabledStencilDesc.StencilReadMask = 0xFF;
+	depthDisabledStencilDesc.StencilWriteMask = 0xFF;
+	depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Create the state using the device.
+	result = _device->CreateDepthStencilState(&depthDisabledStencilDesc, &_depthDisabledStencilState);
+	if (FAILED(result))
+	{
+		Debug::Error("Failed to create the depth disable stencil");
+		return;
+	}
+
 	Debug::Message("Direct3D Init");
 
 	BeginScene(0, 0, 0);
 	EndScene();
+}
+
+void Direct3D::TurnZBufferOn()
+{
+	_deviceContext->OMSetDepthStencilState(_depthStencilState, 1);
+	return;
+}
+
+
+void Direct3D::TurnZBufferOff()
+{
+	_deviceContext->OMSetDepthStencilState(_depthDisabledStencilState, 1);
+	return;
 }
 
 void Direct3D::BeginScene(float red, float green, float blue)

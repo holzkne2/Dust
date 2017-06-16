@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "MeshRenderer.h"
 #include "Light.h"
+#include "UIImage.h"
 
 #include <SDL_syswm.h>
 #include <Windows.h>
@@ -57,7 +58,7 @@ void Graphics::Awake()
 
 	//Setup Direct3D
 	_direct3d = new Direct3D();
-	_direct3d->Initialize(_screenHeight, _screenHeight, true, *_hwnd, _fullscreen, 0.1, 1000);
+	_direct3d->Initialize(_screenWidth, _screenHeight, true, *_hwnd, _fullscreen, 0.1, 1000);
 }
 
 void Graphics::Render()
@@ -101,15 +102,20 @@ void Graphics::Render()
 				meshRendererPointer = meshRenderers->at(i);
 				worldMatrix = meshRendererPointer->GetGameObject()->GetTransform()->GetWorldMatrix();
 
-				if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
-					if (!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
-						Debug::Error("Mesh Initialize Failed");
-				meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
+				meshRendererPointer->Render(_direct3d->GetDeviceContext(),
+					_direct3d->GetDevice(), worldMatrix, viewMatrix, projectionMatrix,
+					lightPointer, _ambient);
 
-				meshRendererPointer->GetSharedMaterial()->Render(_direct3d->GetDeviceContext(),
-					meshRendererPointer->GetSharedMesh()->GetIndexCount(),
-					worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);
+				//if (!meshRendererPointer->GetSharedMesh()->IsInitizlized())
+				//	if (!meshRendererPointer->GetSharedMesh()->Initialize(_direct3d->GetDevice()))
+				//		Debug::Error("Mesh Initialize Failed");
+				//meshRendererPointer->GetSharedMesh()->Render(_direct3d->GetDeviceContext());
 
+				//meshRendererPointer->GetSharedMaterial()->Render(_direct3d->GetDeviceContext(),
+				//	meshRendererPointer->GetSharedMesh()->GetIndexCount(),
+				//	worldMatrix, viewMatrix, projectionMatrix, lightPointer, _ambient);
+
+				//old old
 				/*if (!meshRendererPointer->GetShader()->IsInitizlized())
 					if (!meshRendererPointer->GetShader()->Initialize(_direct3d->GetDevice(), *_hwnd))
 						std::cout << "Shader Initialize Failed" << std::endl;
@@ -121,6 +127,26 @@ void Graphics::Render()
 			++l;
 		} while (l < lights->size());
 	}
+
+	// Render UI
+	_direct3d->TurnZBufferOff();
+	//TODO: Make Flat
+	viewMatrix = Matrix4x4::Orthographic(_screenWidth, _screenHeight, 0.01, 1000);
+	//TODO: Prob Wrong
+	projectionMatrix = Matrix4x4::Inverse(Matrix4x4::Identity);
+	//TODO: Optimize
+	for (unsigned int i = 0; i < gameObjects->size(); ++i)
+	{
+		if (gameObjects->at(i)->GetComponent<UIImage>() != nullptr)
+		{
+			UIImage* UIptr = gameObjects->at(i)->GetComponent<UIImage>();
+			worldMatrix = UIptr->GetGameObject()->GetTransform()->GetWorldMatrix();
+			UIptr->Render(_direct3d->GetDeviceContext(),
+				_direct3d->GetDevice(), worldMatrix, viewMatrix, projectionMatrix,
+				nullptr, _ambient);
+		}
+	}
+	_direct3d->TurnZBufferOn();
 
 	//Swap Buffer
 	_direct3d->EndScene();

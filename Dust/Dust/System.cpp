@@ -41,11 +41,13 @@ void System::Initialize()
 
 void System::Run()
 {
-	_sceneManager->SetCurrentScene(0);
+	//_sceneManager->SetCurrentScene(0);
 
 	//TESTCODE
-	//_sceneManager->GetCurrentScene()->SampleScene();
+	_sceneManager->GetCurrentScene()->SampleScene();
 	//_sceneManager->GetCurrentScene()->Save();
+
+	_debug->CreateDebugUI();
 
 	SDL_Event evt;
 	bool programrunning = true;
