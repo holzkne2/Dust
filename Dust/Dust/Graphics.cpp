@@ -88,18 +88,21 @@ void Graphics::Render()
 	//Render Camera
 	if (camera)
 	{
+		//TODO: If camera is off
 		viewMatrix = camera->GetViewMatrix();
 		projectionMatrix = camera->GetViewport();
 
 		unsigned int l = 0;
 		do
 		{
-			if (lights->size() > 0)
+			if (lights->size() > 0 && lights->at(l)->IsEnable())
 				lightPointer = lights->at(l);
 
 			for (unsigned int i = 0; i < meshRenderers->size(); ++i)
 			{
 				meshRendererPointer = meshRenderers->at(i);
+				if (!meshRendererPointer->IsEnable())
+					continue;
 				worldMatrix = meshRendererPointer->GetGameObject()->GetTransform()->GetWorldMatrix();
 
 				meshRendererPointer->Render(_direct3d->GetDeviceContext(),
@@ -130,9 +133,7 @@ void Graphics::Render()
 
 	// Render UI
 	_direct3d->TurnZBufferOff();
-	//TODO: Make Flat
 	viewMatrix = Matrix4x4::Orthographic(_screenWidth, _screenHeight, 0.01, 1000);
-	//TODO: Prob Wrong
 	projectionMatrix = Matrix4x4::Inverse(Matrix4x4::Identity);
 	//TODO: Optimize
 	for (unsigned int i = 0; i < gameObjects->size(); ++i)
@@ -140,6 +141,8 @@ void Graphics::Render()
 		if (gameObjects->at(i)->GetComponent<UIImage>() != nullptr)
 		{
 			UIImage* UIptr = gameObjects->at(i)->GetComponent<UIImage>();
+			if (!UIptr->IsEnable())
+				continue;
 			worldMatrix = UIptr->GetGameObject()->GetTransform()->GetWorldMatrix();
 			UIptr->Render(_direct3d->GetDeviceContext(),
 				_direct3d->GetDevice(), worldMatrix, viewMatrix, projectionMatrix,

@@ -18,10 +18,15 @@ public:
 	void SetGameObject(GameObject* gameObject) { _gameObject = gameObject; }
 	GameObject* GetGameObject() { return _gameObject; }
 
+	bool IsEnable();
+	void SetEnable(bool enable) { _enable = enable; }
+
 	virtual void serialize(std::ostream& stream) {}
 	virtual void deserialize(std::istream& stream) {}
 
 protected:
 	GameObject* _gameObject;
+	//Move
+	bool _enable;
 };
 

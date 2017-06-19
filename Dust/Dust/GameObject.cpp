@@ -11,6 +11,7 @@
 GameObject::GameObject()
 {
 	_transform.SetGameObject(this);
+	_enable = true;
 }
 
 
@@ -29,7 +30,11 @@ void GameObject::Update()
 	for (unsigned int i = 0; i < _components.size(); i++)
 	{
 		if (_components[i])
+		{
+			if (!_components[i]->IsEnable())
+				continue;
 			_components[i]->Update();
+		}
 	}
 }
 

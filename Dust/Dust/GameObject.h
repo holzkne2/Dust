@@ -25,6 +25,9 @@ public:
 	template<typename T> T* AddComponent();
 	Component* AddComponent(Component*);
 
+	bool IsEnable() { return _enable; }
+	void SetEnable(bool enable) { _enable = enable; }
+
 	virtual void serialize(std::ostream& stream) {
 		stream << "GameObject ";
 		_transform.serialize(stream);
@@ -67,6 +70,7 @@ public:
 protected:
 	Transform _transform;
 	std::vector<Component*> _components;
+	bool _enable;
 };
 
 template<typename T> T* GameObject::GetComponent()

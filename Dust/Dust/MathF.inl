@@ -681,16 +681,16 @@ inline Matrix4x4 Matrix4x4::Orthographic(float width, float height, float zNear,
 
 	return r;
 
-	r._m[0][0] = 2 / (width - 1);
-	r._m[1][1] = 2 / (height - 1);
-	r._m[2][2] = -2 / (zFar - zNear);
+	//r._m[0][0] = 2 / (width - 1);
+	//r._m[1][1] = 2 / (height - 1);
+	//r._m[2][2] = -2 / (zFar - zNear);
 
-	r._m[0][3] = -1;
-	r._m[1][3] = -1;
-	r._m[2][3] = (zNear + zFar) / (zNear - zFar);
-	r._m[3][3] = 1;
+	//r._m[0][3] = -1;
+	//r._m[1][3] = -1;
+	//r._m[2][3] = (zNear + zFar) / (zNear - zFar);
+	//r._m[3][3] = 1;
 
-	return r;
+	//return r;
 }
 
 inline Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m)

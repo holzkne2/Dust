@@ -261,6 +261,8 @@ void Scene::Update()
 {
 	for (unsigned int i = 0; i < _gameObjects.size(); i++)
 	{
+		if (!_gameObjects[i]->IsEnable())
+			continue;
 		_gameObjects[i]->Update();
 	}
 }
