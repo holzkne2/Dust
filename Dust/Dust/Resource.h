@@ -17,7 +17,8 @@ typedef enum
 	Resource_Null = 0,
 	Resource_Mesh = 1,
 	Resource_Material = 2,
-	Resource_Texture = 3
+	Resource_Texture = 3,
+	Resource_Font = 4
 } ResourceType;
 
 class Resource :

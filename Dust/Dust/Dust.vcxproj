@@ -84,6 +84,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="FileHelperDust.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Importer.cpp" />
@@ -103,6 +104,7 @@
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -110,6 +112,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="FileHelperDust.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Importer.h" />
@@ -129,9 +132,12 @@
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIImage.h" />
+    <ClInclude Include="UIText.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Font.shader" />
     <None Include="MathF.inl" />
+    <None Include="Sprite.shader" />
     <None Include="Standard.shader" />
     <None Include="UnlitTexture.shader" />
   </ItemGroup>

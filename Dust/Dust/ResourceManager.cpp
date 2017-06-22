@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Texture2D.h"
 #include "Mesh.h"
+#include "Font.h"
 #include "SceneManager.h"
 #include "Debug.h"
 
@@ -124,6 +125,25 @@ void ResourceManager::FindResources(string dirPath)
 			{
 				resource = new Mesh();
 				resource->SetType(Resource_Mesh);
+				resource->SetPath(stows(currPath));
+
+				for (unsigned int l = 0; l < data.size(); ++l)
+				{
+					vector<string> tokens = GetTokens(data[l], ' ');
+					for (unsigned int i = 0; i < tokens.size(); ++i)
+					{
+						if (tokens[i] == "_guid:")
+						{
+							resource->SetResourceID(stoul(tokens[++i]));
+						}
+					}
+				}
+			}
+			//Font
+			else if (ext == ".font")
+			{
+				resource = new Font();
+				resource->SetType(Resource_Font);
 				resource->SetPath(stows(currPath));
 
 				for (unsigned int l = 0; l < data.size(); ++l)

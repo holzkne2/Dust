@@ -7,6 +7,7 @@
 #include "MeshRenderer.h"
 #include "Light.h"
 #include "UIImage.h"
+#include "UIText.h"
 
 #include <SDL_syswm.h>
 #include <Windows.h>
@@ -133,14 +134,16 @@ void Graphics::Render()
 
 	// Render UI
 	_direct3d->TurnZBufferOff();
+	_direct3d->TurnOnAlphaBlending();
 	viewMatrix = Matrix4x4::Orthographic(_screenWidth, _screenHeight, 0.01, 1000);
 	projectionMatrix = Matrix4x4::Inverse(Matrix4x4::Identity);
+	Renderer* UIptr;
 	//TODO: Optimize
 	for (unsigned int i = 0; i < gameObjects->size(); ++i)
 	{
-		if (gameObjects->at(i)->GetComponent<UIImage>() != nullptr)
+		if (gameObjects->at(i)->GetComponent<UIImage>() != nullptr || gameObjects->at(i)->GetComponent<UIText>() != nullptr)
 		{
-			UIImage* UIptr = gameObjects->at(i)->GetComponent<UIImage>();
+			UIptr = gameObjects->at(i)->GetComponent<Renderer>();
 			if (!UIptr->IsEnable())
 				continue;
 			worldMatrix = UIptr->GetGameObject()->GetTransform()->GetWorldMatrix();
@@ -149,6 +152,7 @@ void Graphics::Render()
 				nullptr, _ambient);
 		}
 	}
+	_direct3d->TurnOffAlphaBlending();
 	_direct3d->TurnZBufferOn();
 
 	//Swap Buffer

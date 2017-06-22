@@ -395,7 +395,7 @@ bool Mesh::InitializeDynamicBuffers(ID3D11Device* device)
 			Full_vertices[i].tangent = _tangents[i];
 	}
 
-	// Set up the description of the static vertex buffer.
+	// Set up the description of the dynamic vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * _vertices.size();
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -413,11 +413,11 @@ bool Mesh::InitializeDynamicBuffers(ID3D11Device* device)
 	if (FAILED(result))
 		return false;
 
-	// Set up the description of the static index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	// Set up the description of the dynamic index buffer.
+	indexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * _triangles.size();
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
 	indexBufferDesc.MiscFlags = 0;
 	indexBufferDesc.StructureByteStride = 0;
 
@@ -436,13 +436,17 @@ bool Mesh::InitializeDynamicBuffers(ID3D11Device* device)
 	return true;
 }
 
-//WARNING: Does not edit triangles
 bool Mesh::UpdateDynamicBuffers(ID3D11DeviceContext* deviceContext)
 {
 	VertexType* Full_vertices = new VertexType[_vertices.size()];
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	VertexType* verticesPtr;
+	unsigned long* indexPtr;
 	HRESULT result;
+
+	//
+	// VERTEX
+	//
 
 	for (int i = 0; i < _vertices.size(); i++)
 	{
@@ -472,9 +476,7 @@ bool Mesh::UpdateDynamicBuffers(ID3D11DeviceContext* deviceContext)
 	// Lock the vertex buffer so it can be written to.
 	result = deviceContext->Map(_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
 	// Get a pointer to the data in the vertex buffer.
 	verticesPtr = (VertexType*)mappedResource.pData;
@@ -484,10 +486,28 @@ bool Mesh::UpdateDynamicBuffers(ID3D11DeviceContext* deviceContext)
 
 	// Unlock the vertex buffer.
 	deviceContext->Unmap(_vertexBuffer, 0);
+	
+	//
+	// INDEX
+	//
+	
+	// Lock the index buffer so it can be written to
+	result = deviceContext->Map(_indexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
 
-	// Release the vertex array as it is no longer needed.
+	// Get a pointer to the data in the index buffer
+	indexPtr = (unsigned long*)mappedResource.pData;
+
+	// Copy the data into the index buffer
+	memcpy(indexPtr, (void*)_triangles.data(), (sizeof(int) * _triangles.size()));
+
+	// Unlock the index buffer
+	deviceContext->Unmap(_indexBuffer, 0);
+
+
+	// Release the arraya as it is no longer needed.
 	delete[] Full_vertices;
-
 
 	return true;
 }

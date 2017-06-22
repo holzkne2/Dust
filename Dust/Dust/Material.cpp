@@ -99,7 +99,7 @@ void Material::Render(ID3D11DeviceContext* deviceContext, int indexCount, Matrix
 
 bool Material::ReadMatFile()
 {
-	vector<string> tokens = GetTokensFromFile(wstos(_path));
+	vector<string> tokens = GetTokensFromFile(wstos(_path), ' ');
 
 	for (unsigned int i = 0; i < tokens.size(); ++i)
 	{

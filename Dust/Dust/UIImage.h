@@ -19,8 +19,6 @@ public:
 	virtual void Awake();
 
 	virtual bool Render(ID3D11DeviceContext*, ID3D11Device*, Matrix4x4, Matrix4x4, Matrix4x4, Light*, Color);
-	
-	int GetIndexCount();
 
 	void SetTexture(Texture2D* const texture) { _texture = texture; _dirty = true; }
 

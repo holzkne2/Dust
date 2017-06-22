@@ -10,7 +10,7 @@ vector<string> GetTokens(string str, char delimiter);
 
 vector<string> ReadFile(string path);
 
-vector<string> GetTokensFromFile(string path);
+vector<string> GetTokensFromFile(string path, char delimiter);
 
 wstring stows(string str);
 

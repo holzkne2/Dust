@@ -283,6 +283,7 @@ void Scene::SampleScene()
 
 	Material* mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(3));
 	Material* umat = static_cast<Material*>(ResourceManager::getInstance().GetResource(4));
+	Material* terrain_mat = static_cast<Material*>(ResourceManager::getInstance().GetResource(13));
 
 
 	Mesh* cube_mesh = static_cast<Mesh*>(ResourceManager::getInstance().GetResource(5));
@@ -295,7 +296,7 @@ void Scene::SampleScene()
 	simpleMesh->GetTransform()->SetRotation(Quaternion::Euler(Vector3(0, 0, 0)));
 	simpleMesh->AddComponent<MeshRenderer>();
 	simpleMesh->GetComponent<MeshRenderer>()->SetSharedMesh(terrain_mesh);
-	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(mat);
+	simpleMesh->GetComponent<MeshRenderer>()->SetMaterial(terrain_mat);
 	AddGameObject(simpleMesh);
 
 	simpleMesh = new GameObject();

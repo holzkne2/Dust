@@ -29,7 +29,7 @@ void ObjToMesh(std::wstring path, Mesh* const &mesh)
 	vector<Vector3> full_vn;
 	vector<int> full_f;
 
-	vector<string> tokens = GetTokensFromFile(wstos(path));
+	vector<string> tokens = GetTokensFromFile(wstos(path), ' ');
 
 	mesh->Clear();
 

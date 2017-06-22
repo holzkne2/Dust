@@ -36,14 +36,14 @@ vector<string> ReadFile(string path)
 	return r;
 }
 
-vector<string> GetTokensFromFile(string path)
+vector<string> GetTokensFromFile(string path, char delimiter)
 {
 	vector<string> r;
 	vector<string> tokens;
 	vector<string> lines = ReadFile(path);
 	for (unsigned int i = 0; i < lines.size(); ++i)
 	{
-		tokens = GetTokens(lines[i], ' ');
+		tokens = GetTokens(lines[i], delimiter);
 		r.insert(r.end(), tokens.begin(), tokens.end());
 	}
 	return r;

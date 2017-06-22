@@ -28,6 +28,9 @@ public:
 	void TurnZBufferOn();
 	void TurnZBufferOff();
 
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
+
 private:
 	bool _vsync_enabled;
 	int _videoCardMemory;
@@ -41,5 +44,7 @@ private:
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11RasterizerState* _rasterState;
 	ID3D11DepthStencilState* _depthDisabledStencilState;
+	ID3D11BlendState* _alphaEnableBlendingState;
+	ID3D11BlendState* _alphaDisableBlendingState;
 };
 
